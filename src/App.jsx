@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from 'react';
 
 export default function App() {
+  // Formulářové stavy
   const [heroName, setHeroName] = useState('');
   const [ageGroup, setAgeGroup] = useState('5-7');
   const [tension, setTension] = useState(3);
   const [theme, setTheme] = useState('');
   const [length, setLength] = useState('medium');
 
+  // Systémové stavy
   const [isLoading, setIsLoading] = useState(false);
   const [currentLoadingText, setCurrentLoadingText] = useState('');
   const [story, setStory] = useState(null);
   const [error, setError] = useState(null);
   
-  // Stavy pro historii z Notionu
+  // Historie uložených příběhů z Notionu
   const [savedStories, setSavedStories] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
   
+  // Audio stavy
   const [voiceGender, setVoiceGender] = useState('female');
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -108,7 +111,6 @@ export default function App() {
         image: getStoryImage(ageGroup)
       });
 
-      // Okamžitě zaktualizujeme boční panel z Notionu
       fetchHistory();
 
     } catch (err) {
@@ -152,7 +154,6 @@ export default function App() {
         <div className="bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full text-emerald-400 text-xs font-semibold">NOTION SYNCED</div>
       </header>
 
-      {/* MŘÍŽKA S POMĚREM SLOUPCŮ 3 : 6 : 3 */}
       <main className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* LEVÝ PANEL (Šířka 3) */}
@@ -163,14 +164,25 @@ export default function App() {
               <label className="block text-[11px] font-semibold uppercase tracking-wider text-purple-300 mb-1.5">Jméno hrdiny</label>
               <input type="text" value={heroName} onChange={(e) => setHeroName(e.target.value)} placeholder="Např. Eliška, David..." className="w-full bg-[#191433] border border-purple-900/40 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 text-sm" required />
             </div>
+            
+            {/* VĚK DOBRODRUHA - POPISKY VRÁCENY ZPĚT */}
             <div>
               <label className="block text-[11px] font-semibold uppercase tracking-wider text-purple-300 mb-1.5">Věk dobrodruha</label>
-              <div className="grid grid-cols-2 gap-1.5">
-                {[ ['2-4', 'Batolata'], ['5-7', 'Předškoláci'], ['8-12', 'Školáci'], ['13+', 'Mladí dospělí'] ].map(([id, label]) => (
-                  <button key={id} type="button" onClick={() => setAgeGroup(id)} className={`p-2 rounded-xl border text-left transition ${ageGroup === id ? 'bg-emerald-950/30 border-emerald-500 text-white shadow-[0_0_10px_rgba(16,185,129,0.1)]' : 'bg-[#191433] border-purple-950 text-purple-300/60 hover:border-purple-900'}`}><span className="font-bold text-xs block">{label}</span></button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                {[ 
+                  ['2-4', 'Batolata', '2-4 roky'], 
+                  ['5-7', 'Předškoláci', '5-7 let'], 
+                  ['8-12', 'Školáci', '8-12 let'], 
+                  ['13+', 'Mladí dospělí', '13+ let'] 
+                ].map(([id, label, ageRange]) => (
+                  <button key={id} type="button" onClick={() => setAgeGroup(id)} className={`p-2.5 rounded-xl border text-left transition flex flex-col justify-center ${ageGroup === id ? 'bg-emerald-950/30 border-emerald-500 text-white shadow-[0_0_10px_rgba(16,185,129,0.1)]' : 'bg-[#191433] border-purple-950 text-purple-300/60 hover:border-purple-900'}`}>
+                    <span className="font-bold text-xs block">{label}</span>
+                    <span className="text-[10px] text-purple-400/40 block mt-0.5">{ageRange}</span>
+                  </button>
                 ))}
               </div>
             </div>
+
             <div>
               <div className="flex justify-between text-[11px] font-semibold uppercase tracking-wider text-purple-300 mb-1.5">
                 <span>ÚROVEŇ NAPĚTÍ</span>
@@ -194,7 +206,7 @@ export default function App() {
           </form>
         </div>
 
-        {/* PROSTŘEDNÍ PANEL: ŠIRŠÍ PLÁTNO (Šířka 6) */}
+        {/* PROSTŘEDNÍ PANEL (Šířka 6) */}
         <div className="lg:col-span-6 bg-[#120e24]/30 border border-purple-950/20 rounded-2xl p-6 flex flex-col min-h-[550px] justify-center items-center relative">
           {error && <div className="p-4 bg-red-950/40 border border-red-500/30 text-red-300 text-xs rounded-xl w-full text-center mb-4">{error}</div>}
 
@@ -214,12 +226,12 @@ export default function App() {
           )}
 
           {!isLoading && story && (
-            <div className="w-full space-y-6 anonymity-fadeIn">
+            <div className="w-full space-y-6">
               {story.image && <img src={story.image} alt="Ilustrace" className="w-full h-56 object-cover rounded-xl border border-purple-950 shadow-md" />}
               <div className="space-y-4">
                 <h3 className="text-2xl font-black text-amber-400 leading-tight border-b border-purple-950/40 pb-2">{story.title}</h3>
                 <div className="text-purple-50/95 leading-relaxed text-base md:text-lg text-justify max-h-[420px] overflow-y-auto pr-3 space-y-4 custom-scrollbar whitespace-pre-line font-medium">
-                  {story.text || <p className="text-purple-400 italic text-sm">Celý text najdeš ve svém Notionu. Prototyp v bočním panelu zobrazuje přehled.</p>}
+                  {story.text}
                 </div>
               </div>
               {story.text && (
@@ -242,7 +254,6 @@ export default function App() {
 
         {/* PRAVÝ PANEL (Šířka 3) */}
         <div className="lg:col-span-3 space-y-6">
-          {/* ŽIVÁ HISTORIE Z NOTIONU */}
           <div className="bg-[#120e24] border border-purple-950/40 rounded-2xl p-4 shadow-xl flex flex-col max-h-[280px]">
             <h3 className="text-xs font-bold text-purple-300 uppercase tracking-wider mb-3 border-b border-purple-950/50 pb-2">Moje Kovárna ({savedStories.length})</h3>
             <div className="space-y-2 overflow-y-auto pr-1 custom-scrollbar flex-1">
