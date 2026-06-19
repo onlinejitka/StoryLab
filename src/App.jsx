@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-// Databáze náhodných kombinací pro funkci Překvap mě
 const SURPRISE_POOL = [
   { name: "Bella a David", age: "5-7", tension: 2, length: "medium", theme: "Sžívání se s Lukášem – novým partnerem maminky. Bella ho má ráda, ale David se schovává do svého bunkru a AI pomůže najít společnou pohádkovou řeč." },
   { name: "Anička", age: "2-4", tension: 1, length: "short", theme: "Skřítek Ponožkovník schovává věci po pokoji, protože z nich staví tajný koráb pro medvídky." },
@@ -31,7 +30,8 @@ export default function App() {
   const loadingMessages = [
     "Kovám tvůj příběh v magické výhni...",
     "Míchám ingredience čisté fantazie...",
-    "Zapisuji kompletní zadání do tvého Notionu...",
+    "Zapisuji sloupce přímo do tvého Notionu...",
+    "Rozvíjím dlouhé kapitoly vyprávění...",
     "Učesávám českou gramatiku..."
   ];
 
@@ -67,7 +67,6 @@ export default function App() {
     return () => clearInterval(interval);
   }, [isLoading]);
 
-  // FUNKCE PŘEKVAP MĚ
   const handleSurpriseMe = () => {
     const randomIndex = Math.floor(Math.random() * SURPRISE_POOL.length);
     const randomConfig = SURPRISE_POOL[randomIndex];
@@ -95,24 +94,35 @@ export default function App() {
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     setIsPlaying(false);
 
-    const ageLabels = { '2-4': '2-4 roky (Batole)', '5-7': '5-7 let (Předškolák)', '8-12': '8-12 let (Školák)', '13+': '13+ let (Mladý dospělý)' };
-    const tensionLabels = { 1: 'Klidná usínací', 2: 'Pohodová', 3: 'Dobrodružná', 4: 'Napínavá', 5: 'Lehce strašidelná' };
-    const lengthLabels = { short: 'krátký (3 minuty)', medium: 'střední (10 minut)', long: 'epický (20+ minut)' };
+    const ageLabels = { '2-4': '2-4 roky', '5-7': '5-7 let', '8-12': '8-12 let', '13+': '13+ let' };
+    const tensionLabels = { 1: 'Klidná usínací', 2: 'Pohodová', 3: 'Dobrodružná', 4: 'Napínavá', 5: 'Strašidelná' };
+    
+    // RADIKÁLNÍ ZPŘÍSNĚNÍ INSTRUKCÍ PRO DÉLKU AI PŘÍBĚHU
+    const lengthLabels = { 
+      short: 'KRÁTKÝ příběh (rychlovka před spaním, cca 3 až 4 odstavce).', 
+      medium: 'VELMI DLOUHÝ, POCTIVÝ PŘÍBĚH. Instrukce: Napiš minimálně 12 až 18 rozsáhlých a detailních odstavců. Děj nesmí utíkat rychle, věnuj se detailnímu popisu prostředí, pocitům postav, rozvíjej dlouhé a hluboké dialogy mezi hrdiny. Text musí být dostatečně dlouhý na 10 minut souvislého čtení!', 
+      long: 'EPICKÝ ROZSÁHLÝ EPOS ROZDĚLENÝ NA KAPITOLY (např. Kapitola I, Kapitola II, Kapitola III). Instrukce: Vygeneruj obří literární dílo o minimálně 25 až 35 bohatých odstavcích. Piš maximálně barvitě, rozvíjej vedlejší zápletky, popisy scén a dramatické rozhovory, aby čtení trvalo přes 20 minut!' 
+    };
 
-    const systemPrompt = `Jsi elitní spisovatel dětských knih. Napíšeš originální příběh v češtině.
-    CRITICAL GRAMMAR RULE: Podívej se na jméno hrdiny a přizpůsob tomu koncovky sloves v minulém čase (odešel vs odešla). V textu nesmí být ŽÁDNÁ rodová lomítka ani závorky.
+    const systemPrompt = `Jsi špičkový spisovatel knih pro děti a mládež. Tvým úkolem je napsat originální a dechberoucí příběh v češtině.
+    CRITICAL GRAMMAR RULE: Podívej se na jméno hrdiny a přizpůsob tomu koncovky sloves v minulém čase (odešel vs odešla). Pokud je hrdinů více (např. Bella a David), používej množné číslo (odešli, objevili). V textu nesmí být ŽÁDNÁ rodová lomítka ani závorky!
+    CRITICAL LENGTH COMMAND: Striktně a nekompromisně dodrž pokyny pro rozsah v parametru Délka. Umělá inteligence má tendenci texty zkracovat – ty máš ale příkaz psát extrémně detailně, rozvláčně, používat bohatou slovní zásobu a generovat obrovské množství textu, pokud je vyžádán střední či dlouhý rozsah.
     STRICT FORMATTING RULE: Tvůj výstup musí striktně dodržet formátování:
     [NAZEV] Sem název příběhu
     [TEXT] Sem text příběhu rozdělený do odstavců.`;
 
-    const userPrompt = `Parametry: Jméno: ${heroName}, Věk: ${ageLabels[ageGroup]}, Atmosféra: ${tensionLabels[tension]}, Téma: ${theme}, Délka: ${lengthLabels[length]}`;
+    const userPrompt = `Parametry výstupu:
+    - Jméno hlavního hrdiny: ${heroName}
+    - Věková kategorie: ${ageLabels[ageGroup]}
+    - Úroveň napětí/atmosféra: ${tensionLabels[tension]}
+    - Hlavní téma/zápletka: ${theme}
+    - Požadovaná délka: ${lengthLabels[length]}`;
 
-    // Objekt s čitelnými daty pro uložení do Notion struktury
     const inputDetails = {
       heroName,
       age: ageLabels[ageGroup],
       tension: tensionLabels[tension],
-      length: lengthLabels[length],
+      length: length === 'short' ? 'Rychlovka (3 min)' : length === 'medium' ? 'Poctivý příběh (10 min)' : 'Epické dobrodružství (20+ min)',
       theme
     };
 
@@ -136,9 +146,8 @@ export default function App() {
         image: getStoryImage(ageGroup)
       });
 
-      // Kontrola, zda ukládání do Notionu proběhlo hladce
       if (data.notionStatus !== "Uspěšně uloženo") {
-        setNotionWarning(`Příběh vykován, ale zápis do Notionu selhal (${data.notionErrorDetails || data.notionStatus}). Zkontroluj propojení (Connection) v tabulce.`);
+        setNotionWarning(`Příběh vykován, ale zápis do sloupců Notionu selhal (${data.notionErrorDetails || data.notionStatus}). Zkontroluj, zda se sloupce v Notionu jmenují přesně: Hrdina, Věk, Atmosféra, Délka, Téma.`);
       }
 
       fetchHistory();
@@ -159,7 +168,7 @@ export default function App() {
     }
 
     if ('speechSynthesis' in window) {
-      const utterance = new SynthesisUtterance(story.title + ". " + story.text);
+      const utterance = new SpeechSynthesisUtterance(story.title + ". " + story.text);
       utterance.lang = 'cs-CZ';
       const voices = window.speechSynthesis.getVoices();
       const czechVoices = voices.filter(v => v.lang.startsWith('cs'));
@@ -191,7 +200,7 @@ export default function App() {
 
       <main className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        {/* LEVÝ PANEL (Šířka 3) */}
+        {/* LEVÝ PANEL */}
         <div className="lg:col-span-3 bg-[#120e24] border border-purple-950/40 rounded-2xl p-5 shadow-xl space-y-5 h-fit">
           <h2 className="text-lg font-bold text-emerald-400 tracking-wide">Kovárna Příběhů</h2>
           <form onSubmit={handleForgeStory} className="space-y-5">
@@ -200,7 +209,6 @@ export default function App() {
               <input type="text" value={heroName} onChange={(e) => setHeroName(e.target.value)} placeholder="Např. Eliška, David..." className="w-full bg-[#191433] border border-purple-900/40 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 text-sm" required />
             </div>
             
-            {/* VĚK DOBRODRUHA - Kompletně opravené popisky */}
             <div>
               <label className="block text-[11px] font-semibold uppercase tracking-wider text-purple-300 mb-1.5">Věk dobrodruha</label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
@@ -245,7 +253,7 @@ export default function App() {
           </form>
         </div>
 
-        {/* PROSTŘEDNÍ PANEL (Šířka 6) */}
+        {/* PROSTŘEDNÍ PANEL */}
         <div className="lg:col-span-6 bg-[#120e24]/30 border border-purple-950/20 rounded-2xl p-6 flex flex-col min-h-[550px] justify-center items-center relative">
           {error && <div className="p-4 bg-red-950/40 border border-red-500/30 text-red-300 text-xs rounded-xl w-full text-center mb-4">{error}</div>}
           {notionWarning && <div className="p-3 bg-amber-950/30 border border-amber-500/20 text-amber-300 text-[11px] rounded-xl w-full text-center mb-4">{notionWarning}</div>}
@@ -254,7 +262,7 @@ export default function App() {
             <div className="text-center p-8 max-w-sm space-y-3">
               <span className="text-5xl block opacity-40">📖</span>
               <h3 className="text-lg font-bold text-purple-200">Kniha osudů čeká</h3>
-              <p className="text-purple-400/50 text-sm">Příběhy se automaticky ukládají do tvého Notionu včetně kompletního nastavení.</p>
+              <p className="text-purple-400/50 text-sm">Příběhy se automaticky ukládají do tvého Notionu rozřazené do přehledných sloupců.</p>
             </div>
           )}
 
@@ -266,7 +274,7 @@ export default function App() {
           )}
 
           {!isLoading && story && (
-            <div className="w-full space-y-6 animate-fadeIn">
+            <div className="w-full space-y-6">
               {story.image && <img src={story.image} alt="Ilustrace" className="w-full h-56 object-cover rounded-xl border border-purple-950 shadow-md" />}
               <div className="space-y-4">
                 <h3 className="text-2xl font-black text-amber-400 leading-tight border-b border-purple-950/40 pb-2">{story.title}</h3>
@@ -292,7 +300,7 @@ export default function App() {
           )}
         </div>
 
-        {/* PRAVÝ PANEL (Šířka 3) */}
+        {/* PRAVÝ PANEL */}
         <div className="lg:col-span-3 space-y-6">
           <div className="bg-[#120e24] border border-purple-950/40 rounded-2xl p-4 shadow-xl flex flex-col max-h-[280px]">
             <h3 className="text-xs font-bold text-purple-300 uppercase tracking-wider mb-3 border-b border-purple-950/50 pb-2">Moje Kovárna ({savedStories.length})</h3>
