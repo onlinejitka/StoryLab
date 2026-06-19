@@ -14,7 +14,6 @@ export default async function handler(req, res) {
 
   let rawResult = "";
   try {
-    // 1. GENEROVÁNÍ PŘÍBĚHU PŘES OPENAI
     const openAiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -27,7 +26,7 @@ export default async function handler(req, res) {
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        temperature: 0.8
+        temperature: 0.85
       })
     });
 
@@ -42,14 +41,12 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: `Selhalo spojené s OpenAI: ${openAiError.message}` });
   }
 
-  // Parser textu
   const titleMatch = rawResult.match(/\[NAZEV\]\s*(.*)/i);
   const textMatch = rawResult.match(/\[TEXT\]\s*([\s\S]*)/i);
   const title = titleMatch ? titleMatch[1].trim() : "Magické dobrodružství";
   let text = textMatch ? textMatch[1].trim() : rawResult;
   text = text.replace(/\[NAZEV\].*$/gmi, '').replace(/\[TEXT\]/gmi, '').trim();
 
-  // 2. POKUS O ULOŽENÍ DO NOTIONU (S GRACIÓZNÍM SELHÁNÍM)
   let notionStatus = "Nenastaveno";
   let notionErrorDetails = null;
 
@@ -57,32 +54,14 @@ export default async function handler(req, res) {
     try {
       const paragraphs = text.split('\n').filter(p => p.trim() !== '');
       
-      // Vytvoření bloků pro Notion (nejprve přehledné zadání, pak text)
-      const notionChildren = [
-        {
-          object: 'block',
-          type: 'quote',
-          quote: {
-            rich_text: [{ 
-              text: { 
-                content: `⚙️ ZADÁNÍ PRO AI:\n• Hrdina: ${inputDetails.heroName}\n• Věk: ${inputDetails.age}\n• Atmosféra: ${inputDetails.tension}\n• Délka: ${inputDetails.length}\n• Téma: ${inputDetails.theme}` 
-              } 
-            }]
-          }
-        },
-        {
-          object: 'block',
-          type: 'divider',
-          divider: {}
-        },
-        ...paragraphs.map(p => ({
-          object: 'block',
-          type: 'paragraph',
-          paragraph: {
-            rich_text: [{ text: { content: p.slice(0, 2000) } }]
-          }
-        }))
-      ];
+      // Tělo stránky bude čisté, bez ošklivého zadání
+      const notionChildren = paragraphs.map(p => ({
+        object: 'block',
+        type: 'paragraph',
+        paragraph: {
+          rich_text: [{ text: { content: p.slice(0, 2000) } }]
+        }
+      }));
 
       const notionResponse = await fetch('https://api.notion.com/v1/pages', {
         method: 'POST',
@@ -93,9 +72,25 @@ export default async function handler(req, res) {
         },
         body: JSON.stringify({
           parent: { database_id: notionDatabaseId },
+          // UKLÁDÁNÍ DO SAMOSTATNÝCH SLOUPCŮ
           properties: {
             "Name": {
               "title": [{ "text": { "content": title } }]
+            },
+            "Hrdina": {
+              "rich_text": [{ "text": { "content": inputDetails.heroName || "" } }]
+            },
+            "Věk": {
+              "rich_text": [{ "text": { "content": inputDetails.age || "" } }]
+            },
+            "Atmosféra": {
+              "rich_text": [{ "text": { "content": inputDetails.tension || "" } }]
+            },
+            "Délka": {
+              "rich_text": [{ "text": { "content": inputDetails.length || "" } }]
+            },
+            "Téma": {
+              "rich_text": [{ "text": { "content": inputDetails.theme || "" } }]
             }
           },
           children: notionChildren
@@ -107,22 +102,13 @@ export default async function handler(req, res) {
       } else {
         const notionErrData = await notionResponse.json();
         notionStatus = "Chyba Notion API";
-        notionErrorDetails = notionErrData.message || "Neznámá chyba v tabulce Notion.";
+        notionErrorDetails = notionErrData.message || "Zkontroluj názvy sloupců v Notionu.";
       }
     } catch (notionErr) {
       notionStatus = "Chyba sítě Notion";
       notionErrorDetails = notionErr.message;
     }
-  } else {
-    notionStatus = "Chybí klíče";
-    notionErrorDetails = "Na Vercelu nejsou vyplněné proměnné NOTION_TOKEN nebo NOTION_DATABASE_ID.";
   }
 
-  // Vždy vrátíme příběh, i kdyby Notion spadl, a k tomu přibalíme info o stavu Notionu
-  return res.status(200).json({ 
-    title, 
-    text, 
-    notionStatus, 
-    notionErrorDetails 
-  });
+  return res.status(200).json({ title, text, notionStatus, notionErrorDetails });
 }
