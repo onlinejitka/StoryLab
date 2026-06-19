@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 const SURPRISE_POOL = [
-  { name: "Bella a David", age: "5-7", tension: 2, length: "medium", theme: "Sžívání se s Lukášem – novým partnerem maminky. Bella ho má ráda, ale David se schovává do svého bunkru a AI pomůže najít společnou pohádkovou řeč." },
+  { name: "Bella a David", age: "5-7", tension: 2, length: "medium", theme: "Sžívání se s Lukášem – novým partnerem maminky. Bella ho má ráda, ale David se schovává do svého bunkru and AI pomůže najít společnou pohádkovou řeč." },
   { name: "Anička", age: "2-4", tension: 1, length: "short", theme: "Skřítek Ponožkovník schovává věci po pokoji, protože z nich staví tajný koráb pro medvídky." },
   { name: "Kryštof", age: "8-12", tension: 4, length: "long", theme: "Nález starého svítícího krystalu v jeskyni pod školou, který otevírá portál do světa, kde se mluví pozpátku." },
   { name: "Max", age: "13+", tension: 5, length: "medium", theme: "Digitální virus infikoval holografické město a hlavní hrdina musí vyřešit logickou hádanku starého mainframe systému." },
@@ -85,7 +85,6 @@ export default function App() {
     return "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600&auto=format&fit=crop&q=80";
   };
 
-  // REÁLNÉ NAČTENÍ STARŠÍHO PŘÍBĚHU PO PROKLIKU Z HISTORIE
   const handleSelectHistoryStory = async (item) => {
     setIsLoading(true);
     setStory(null);
@@ -98,14 +97,14 @@ export default function App() {
 
     try {
       const res = await fetch(`/api/story?id=${item.id}`);
-      if (!res.ok) throw new Error("Text příběhu se nepodařilo z databáze stáhnout.");
+      if (!res.ok) throw new Error("Text příběhu se nepodařilo ze sbírky stáhnout.");
       
       const data = await res.json();
       setStory({
         id: item.id,
         title: data.title,
         text: data.text,
-        image: getStoryImage(ageGroup) // Přiřadí obrázek podle aktuálně zakliknutého věku
+        image: getStoryImage(ageGroup)
       });
     } catch (err) {
       setError(err.message || "Chyba při otevírání staršího příběhu.");
@@ -174,11 +173,16 @@ export default function App() {
         image: getStoryImage(ageGroup)
       });
 
+      if (data.notionStatus !== "Uspěšně uloženo") {
+        console.warn("Zápis na pozadí se nezdařil.");
+      }
+
       fetchHistory();
 
     } catch (err) {
       setError(err.message || "Během generování se stala chyba.");
     } finally {
+      setError(null);
       setIsLoading(false);
     }
   };
@@ -210,7 +214,6 @@ export default function App() {
     }
   };
 
-  // Rozdělení historie na povolenou (3 kusy) a zamčenou
   const freeStories = savedStories.slice(0, 3);
   const lockedCount = savedStories.length > 3 ? savedStories.length - 3 : 0;
 
@@ -281,7 +284,7 @@ export default function App() {
           </form>
         </div>
 
-        {/* PROSTŘEDNÍ PANEL */}
+        {/* PROSTŘEDNÍ PANEL (Čistě pohádkové texty na prázdném plátně) */}
         <div className="lg:col-span-6 bg-[#120e24]/30 border border-purple-950/20 rounded-2xl p-6 flex flex-col min-h-[550px] justify-center items-center relative">
           {error && <div className="p-4 bg-red-950/40 border border-red-500/30 text-red-300 text-xs rounded-xl w-full text-center mb-4">{error}</div>}
           {notionWarning && <div className="p-3 bg-amber-950/30 border border-amber-500/20 text-amber-300 text-[11px] rounded-xl w-full text-center mb-4">{notionWarning}</div>}
@@ -290,7 +293,7 @@ export default function App() {
             <div className="text-center p-8 max-w-sm space-y-3">
               <span className="text-5xl block opacity-40">📖</span>
               <h3 className="text-lg font-bold text-purple-200">Kniha osudů čeká</h3>
-              <p className="text-purple-400/50 text-sm">Příběhy se automaticky ukládají do tvé knižní sbírky včetně kompletního nastavení.</p>
+              <p className="text-purple-400/50 text-sm">Zadej parametry vlevo, stiskni tlačítko a vyraz na kouzelnou cestu. Tvá osobní knižní sbírka se začne plnit unikátními příběhy.</p>
             </div>
           )}
 
@@ -328,7 +331,7 @@ export default function App() {
           )}
         </div>
 
-        {/* PRAVÝ PANEL - OMEZENÍ HISTORIE NA 3 KUSY + ZÁMEK */}
+        {/* PRAVÝ PANEL */}
         <div className="lg:col-span-3 space-y-6">
           <div className="bg-[#120e24] border border-purple-950/40 rounded-2xl p-4 shadow-xl flex flex-col max-h-[380px]">
             <h3 className="text-xs font-bold text-purple-300 uppercase tracking-wider mb-3 border-b border-purple-950/50 pb-2">Moje Kovárna ({savedStories.length})</h3>
@@ -339,7 +342,6 @@ export default function App() {
                 <p className="text-[11px] text-purple-400/40 text-center py-4 italic">V knihovně zatím nic není...</p>
               ) : (
                 <>
-                  {/* Zobrazení povolených 3 příběhů (kliknutelné s reálným načítáním) */}
                   {freeStories.map((item) => (
                     <button 
                       key={item.id} 
@@ -352,7 +354,6 @@ export default function App() {
                     </button>
                   ))}
 
-                  {/* Elegantní prémiový zámek, pokud je v databázi více než 3 příběhy */}
                   {lockedCount > 0 && (
                     <div className="p-3 rounded-xl border border-dashed border-purple-950/60 bg-purple-950/10 flex flex-col items-center justify-center text-center mt-2 space-y-1">
                       <span className="text-sm">🔒</span>
