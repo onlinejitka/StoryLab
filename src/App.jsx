@@ -27,10 +27,11 @@ export default function App() {
   const [voiceGender, setVoiceGender] = useState('female');
   const [isPlaying, setIsPlaying] = useState(false);
 
+  // Kompletně vyčištěné texty bez technických detailů
   const loadingMessages = [
     "Kovám tvůj příběh v magické výhni...",
     "Míchám ingredience čisté fantazie...",
-    "Zapisuji sloupce přímo do tvého Notionu...",
+    "Probouzím pohádkové postavy k životu...",
     "Rozvíjím dlouhé kapitoly vyprávění...",
     "Učesávám českou gramatiku..."
   ];
@@ -44,7 +45,7 @@ export default function App() {
         setSavedStories(data);
       }
     } catch (err) {
-      console.error("Historii z Notionu se nepodařilo načíst.");
+      console.error("Historii se nepodařilo načíst.");
     } finally {
       setLoadingHistory(false);
     }
@@ -97,7 +98,6 @@ export default function App() {
     const ageLabels = { '2-4': '2-4 roky', '5-7': '5-7 let', '8-12': '8-12 let', '13+': '13+ let' };
     const tensionLabels = { 1: 'Klidná usínací', 2: 'Pohodová', 3: 'Dobrodružná', 4: 'Napínavá', 5: 'Strašidelná' };
     
-    // RADIKÁLNÍ ZPŘÍSNĚNÍ INSTRUKCÍ PRO DÉLKU AI PŘÍBĚHU
     const lengthLabels = { 
       short: 'KRÁTKÝ příběh (rychlovka před spaním, cca 3 až 4 odstavce).', 
       medium: 'VELMI DLOUHÝ, POCTIVÝ PŘÍBĚH. Instrukce: Napiš minimálně 12 až 18 rozsáhlých a detailních odstavců. Děj nesmí utíkat rychle, věnuj se detailnímu popisu prostředí, pocitům postav, rozvíjej dlouhé a hluboké dialogy mezi hrdiny. Text musí být dostatečně dlouhý na 10 minut souvislého čtení!', 
@@ -147,7 +147,7 @@ export default function App() {
       });
 
       if (data.notionStatus !== "Uspěšně uloženo") {
-        setNotionWarning(`Příběh vykován, ale zápis do sloupců Notionu selhal (${data.notionErrorDetails || data.notionStatus}). Zkontroluj, zda se sloupce v Notionu jmenují přesně: Hrdina, Věk, Atmosféra, Délka, Téma.`);
+        console.warn("Zápis na pozadí se nezdařil.");
       }
 
       fetchHistory();
@@ -253,7 +253,7 @@ export default function App() {
           </form>
         </div>
 
-        {/* PROSTŘEDNÍ PANEL */}
+        {/* PROSTŘEDNÍ PANEL (Čistě klientské texty) */}
         <div className="lg:col-span-6 bg-[#120e24]/30 border border-purple-950/20 rounded-2xl p-6 flex flex-col min-h-[550px] justify-center items-center relative">
           {error && <div className="p-4 bg-red-950/40 border border-red-500/30 text-red-300 text-xs rounded-xl w-full text-center mb-4">{error}</div>}
           {notionWarning && <div className="p-3 bg-amber-950/30 border border-amber-500/20 text-amber-300 text-[11px] rounded-xl w-full text-center mb-4">{notionWarning}</div>}
@@ -262,7 +262,7 @@ export default function App() {
             <div className="text-center p-8 max-w-sm space-y-3">
               <span className="text-5xl block opacity-40">📖</span>
               <h3 className="text-lg font-bold text-purple-200">Kniha osudů čeká</h3>
-              <p className="text-purple-400/50 text-sm">Příběhy se automaticky ukládají do tvého Notionu rozřazené do přehledných sloupců.</p>
+              <p className="text-purple-400/50 text-sm">Příběhy se automaticky ukládají do tvé knižní sbírky včetně kompletního nastavení.</p>
             </div>
           )}
 
@@ -274,7 +274,7 @@ export default function App() {
           )}
 
           {!isLoading && story && (
-            <div className="w-full space-y-6">
+            <div className="w-full space-y-6 animate-fadeIn">
               {story.image && <img src={story.image} alt="Ilustrace" className="w-full h-56 object-cover rounded-xl border border-purple-950 shadow-md" />}
               <div className="space-y-4">
                 <h3 className="text-2xl font-black text-amber-400 leading-tight border-b border-purple-950/40 pb-2">{story.title}</h3>
@@ -306,9 +306,9 @@ export default function App() {
             <h3 className="text-xs font-bold text-purple-300 uppercase tracking-wider mb-3 border-b border-purple-950/50 pb-2">Moje Kovárna ({savedStories.length})</h3>
             <div className="space-y-2 overflow-y-auto pr-1 custom-scrollbar flex-1">
               {loadingHistory ? (
-                <p className="text-[11px] text-purple-400/40 text-center py-4 animate-pulse">Načítám z Notionu...</p>
+                <p className="text-[11px] text-purple-400/40 text-center py-4 animate-pulse">Načítám příběhy...</p>
               ) : savedStories.length === 0 ? (
-                <p className="text-[11px] text-purple-400/40 text-center py-4 italic">V Notionu zatím nic není...</p>
+                <p className="text-[11px] text-purple-400/40 text-center py-4 italic">V knihovně zatím nic není...</p>
               ) : (
                 savedStories.map((item) => (
                   <div key={item.id} className="w-full text-left p-2.5 rounded-xl border border-purple-950 bg-[#191433] text-purple-200">
