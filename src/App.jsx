@@ -27,7 +27,6 @@ export default function App() {
   const [voiceGender, setVoiceGender] = useState('female');
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // Kompletně vyčištěné texty bez technických detailů
   const loadingMessages = [
     "Kovám tvůj příběh v magické výhni...",
     "Míchám ingredience čisté fantazie...",
@@ -84,6 +83,35 @@ export default function App() {
     if (age === '8-12') return "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&auto=format&fit=crop&q=80";
     if (age === '13+') return "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&auto=format&fit=crop&q=80";
     return "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600&auto=format&fit=crop&q=80";
+  };
+
+  // REÁLNÉ NAČTENÍ STARŠÍHO PŘÍBĚHU PO PROKLIKU Z HISTORIE
+  const handleSelectHistoryStory = async (item) => {
+    setIsLoading(true);
+    setStory(null);
+    setError(null);
+    setNotionWarning(null);
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    setIsPlaying(false);
+    
+    setCurrentLoadingText("Otevírám starou kroniku a listuji v kapitolách...");
+
+    try {
+      const res = await fetch(`/api/story?id=${item.id}`);
+      if (!res.ok) throw new Error("Text příběhu se nepodařilo z databáze stáhnout.");
+      
+      const data = await res.json();
+      setStory({
+        id: item.id,
+        title: data.title,
+        text: data.text,
+        image: getStoryImage(ageGroup) // Přiřadí obrázek podle aktuálně zakliknutého věku
+      });
+    } catch (err) {
+      setError(err.message || "Chyba při otevírání staršího příběhu.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleForgeStory = async (e) => {
@@ -146,10 +174,6 @@ export default function App() {
         image: getStoryImage(ageGroup)
       });
 
-      if (data.notionStatus !== "Uspěšně uloženo") {
-        console.warn("Zápis na pozadí se nezdařil.");
-      }
-
       fetchHistory();
 
     } catch (err) {
@@ -185,6 +209,10 @@ export default function App() {
       window.speechSynthesis.speak(utterance);
     }
   };
+
+  // Rozdělení historie na povolenou (3 kusy) a zamčenou
+  const freeStories = savedStories.slice(0, 3);
+  const lockedCount = savedStories.length > 3 ? savedStories.length - 3 : 0;
 
   return (
     <div className="min-h-screen bg-[#09070f] text-gray-100 font-sans antialiased p-4 md:p-8">
@@ -253,7 +281,7 @@ export default function App() {
           </form>
         </div>
 
-        {/* PROSTŘEDNÍ PANEL (Čistě klientské texty) */}
+        {/* PROSTŘEDNÍ PANEL */}
         <div className="lg:col-span-6 bg-[#120e24]/30 border border-purple-950/20 rounded-2xl p-6 flex flex-col min-h-[550px] justify-center items-center relative">
           {error && <div className="p-4 bg-red-950/40 border border-red-500/30 text-red-300 text-xs rounded-xl w-full text-center mb-4">{error}</div>}
           {notionWarning && <div className="p-3 bg-amber-950/30 border border-amber-500/20 text-amber-300 text-[11px] rounded-xl w-full text-center mb-4">{notionWarning}</div>}
@@ -300,9 +328,9 @@ export default function App() {
           )}
         </div>
 
-        {/* PRAVÝ PANEL */}
+        {/* PRAVÝ PANEL - OMEZENÍ HISTORIE NA 3 KUSY + ZÁMEK */}
         <div className="lg:col-span-3 space-y-6">
-          <div className="bg-[#120e24] border border-purple-950/40 rounded-2xl p-4 shadow-xl flex flex-col max-h-[280px]">
+          <div className="bg-[#120e24] border border-purple-950/40 rounded-2xl p-4 shadow-xl flex flex-col max-h-[380px]">
             <h3 className="text-xs font-bold text-purple-300 uppercase tracking-wider mb-3 border-b border-purple-950/50 pb-2">Moje Kovárna ({savedStories.length})</h3>
             <div className="space-y-2 overflow-y-auto pr-1 custom-scrollbar flex-1">
               {loadingHistory ? (
@@ -310,12 +338,29 @@ export default function App() {
               ) : savedStories.length === 0 ? (
                 <p className="text-[11px] text-purple-400/40 text-center py-4 italic">V knihovně zatím nic není...</p>
               ) : (
-                savedStories.map((item) => (
-                  <div key={item.id} className="w-full text-left p-2.5 rounded-xl border border-purple-950 bg-[#191433] text-purple-200">
-                    <span className="font-bold block truncate text-xs text-emerald-400 mb-0.5">📝 {item.title}</span>
-                    <span className="text-[10px] text-purple-400/50 block">Uloženo: {item.date}</span>
-                  </div>
-                ))
+                <>
+                  {/* Zobrazení povolených 3 příběhů (kliknutelné s reálným načítáním) */}
+                  {freeStories.map((item) => (
+                    <button 
+                      key={item.id} 
+                      type="button"
+                      onClick={() => handleSelectHistoryStory(item)}
+                      className={`w-full text-left p-2.5 rounded-xl border text-xs transition block truncate ${story?.id === item.id ? 'bg-emerald-950/20 border-emerald-500 text-emerald-300' : 'bg-[#191433] border-purple-950 text-purple-200 hover:border-purple-800'}`}
+                    >
+                      <span className="font-bold block truncate text-xs text-emerald-400 mb-0.5">📖 {item.title}</span>
+                      <span className="text-[10px] text-purple-400/50 block">Klikni pro otevření</span>
+                    </button>
+                  ))}
+
+                  {/* Elegantní prémiový zámek, pokud je v databázi více než 3 příběhy */}
+                  {lockedCount > 0 && (
+                    <div className="p-3 rounded-xl border border-dashed border-purple-950/60 bg-purple-950/10 flex flex-col items-center justify-center text-center mt-2 space-y-1">
+                      <span className="text-sm">🔒</span>
+                      <span className="text-[11px] font-bold text-amber-400/90">+{lockedCount} dalších příběhů</span>
+                      <span className="text-[9px] text-purple-400 max-w-[150px] leading-tight">Historie nad 3 položky vyžaduje VIP členství.</span>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>
