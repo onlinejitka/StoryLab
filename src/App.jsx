@@ -13,7 +13,6 @@ export default function App() {
   const [theme, setTheme] = useState('');
   const [length, setLength] = useState('medium');
   
-  // Stav pro tajný přístupový kód (načte se z paměti)
   const [passcode, setPasscode] = useState(() => localStorage.getItem('sl_passcode') || '');
 
   const [isLoading, setIsLoading] = useState(false);
@@ -112,7 +111,6 @@ export default function App() {
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     setIsPlaying(false);
 
-    // Uložíme kód do paměti prohlížeče pro příště
     localStorage.setItem('sl_passcode', passcode);
 
     const ageLabels = { '2-4': '2-4 roky', '5-7': '5-7 let', '8-12': '8-12 let', '13+': '13+ let' };
@@ -183,15 +181,21 @@ export default function App() {
           <h2 className="text-lg font-bold text-emerald-400 tracking-wide">Kovárna Příběhů</h2>
           <form onSubmit={handleForgeStory} className="space-y-5">
             
-            {/* NOVÉ POLÍČKO PRO PŘÍSTUPOVÝ KÓD */}
+            {/* POLÍČKO PRO PŘÍSTUPOVÝ KÓD S JASNÝM MARKETINGOVÝM ODKAZEM POD NÍM */}
             <div className="bg-purple-950/20 border border-purple-900/40 p-3 rounded-xl space-y-2">
-              <label className="block text-[10px] font-bold uppercase tracking-widest text-amber-400">🔑 Přístupový kód (Forendors)</label>
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-amber-400">🔑 Přístupový kód</label>
               <input 
                 type="password" value={passcode} onChange={(e) => setPasscode(e.target.value)} 
                 placeholder="Vlož tajný kód z profilu..." 
                 className="w-full bg-[#191433] border border-purple-900/60 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-amber-500"
                 required 
               />
+              <a 
+                href="https://www.forendors.cz" target="_blank" rel="noreferrer"
+                className="text-[10px] text-emerald-400 hover:text-emerald-300 font-bold hover:underline block pt-1 flex items-center gap-1"
+              >
+                🔒 Nemáš kód? Získej ho na mém Forendors ➔
+              </a>
             </div>
 
             <div>
@@ -237,16 +241,15 @@ export default function App() {
         {/* PROSTŘEDNÍ PANEL */}
         <div className="lg:col-span-6 bg-[#120e24]/30 border border-purple-950/20 rounded-2xl p-6 flex flex-col min-h-[550px] justify-center items-center relative">
           
-          {/* PRÉMIOVÉ ZOBRAZENÍ CHYBY Z FORENDORS S ODKAZEM */}
           {error && (
-            <div className="p-4 bg-red-950/40 border border-red-500/30 text-red-300 text-xs rounded-xl w-full text-center mb-4 flex flex-col items-center gap-2">
+            <div className="p-4 bg-red-950/40 border border-red-500/30 text-red-300 text-xs rounded-xl w-full text-center mb-4 flex flex-col items-center gap-2 animate-fadeIn">
               <span>{error}</span>
-              {error.includes("Forendors") && (
+              {error.includes("kód") && (
                 <a 
                   href="https://www.forendors.cz" target="_blank" rel="noreferrer" 
-                  className="mt-1 bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg font-bold transition block text-center"
+                  className="mt-1 bg-amber-500 hover:bg-amber-600 text-slate-950 px-4 py-2 rounded-xl font-black transition block text-center shadow-lg text-xs tracking-wide"
                 >
-                  👉 Chci získat kód na Forendors
+                  👉 Přejít na Forendors pro tajný kód
                 </a>
               )}
             </div>
@@ -335,10 +338,16 @@ export default function App() {
             <div className="h-12 bg-[#191433] rounded-lg"></div>
           </div>
 
+          {/* VIP BOX - NYNÍ PROPOJENÝ NA FORENDORS */}
           <div className="bg-gradient-to-br from-emerald-500/10 via-purple-950/20 to-[#120e24] border border-emerald-500/20 rounded-2xl p-5 shadow-lg">
             <h3 className="text-base font-black text-amber-400 mb-1">Mistr Kovář VIP</h3>
-            <p className="text-[11px] text-purple-300 mb-4 leading-relaxed">Odemkni ultra-realistické předčítání přes **ElevenLabs** a sdílení knihovny s ostatními uživateli.</p>
-            <button onClick={() => alert("Děkujeme za zájem o VIP!")} className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl">Aktivovat za 99 Kč / měsíc</button>
+            <p className="text-[11px] text-purple-300 mb-4 leading-relaxed">Odemkni ultra-realistické předčítání přes **ElevenLabs**, neomezenou historii a sdílení s ostatními rodinami.</p>
+            <a 
+              href="https://www.forendors.cz/nocniknihovna" target="_blank" rel="noreferrer"
+              className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl block text-center hover:from-amber-400 transition shadow"
+            >
+              Aktivovat na Forendors
+            </a>
           </div>
         </div>
 
