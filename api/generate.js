@@ -3,10 +3,18 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Metoda není povolena' });
   }
 
-  const { systemPrompt, userPrompt, inputDetails } = req.body;
+  const { systemPrompt, userPrompt, inputDetails, passcode } = req.body;
   const apiKey = process.env.OPENAI_API_KEY;
   const notionToken = process.env.NOTION_TOKEN;
   const notionDatabaseId = process.env.NOTION_DATABASE_ID;
+  const storylabPassword = process.env.STORYLAB_PASSWORD; // Tajný kód pro Forendors
+
+  // 1. KONTROLA PŘÍSTUPOVÉHO KÓDU Z FORENDORS
+  if (storylabPassword && passcode !== storylabPassword) {
+    return res.status(401).json({ 
+      error: '🔒 Neplatný přístupový kód! Tento prototyp je momentálně dostupný exkluzivně pro mé předplatitele na Forendors. Tajný kód najdeš v uzamčeném příspěvku na mém profilu.' 
+    });
+  }
 
   if (!apiKey) {
     return res.status(500).json({ error: 'Chybí OPENAI_API_KEY na Vercelu.' });
@@ -26,7 +34,7 @@ export default async function handler(req, res) {
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        temperature: 0.85
+        temperature: 0.8
       })
     });
 
@@ -53,15 +61,25 @@ export default async function handler(req, res) {
   if (notionToken && notionDatabaseId) {
     try {
       const paragraphs = text.split('\n').filter(p => p.trim() !== '');
-      
-      // Tělo stránky bude čisté, bez ošklivého zadání
-      const notionChildren = paragraphs.map(p => ({
-        object: 'block',
-        type: 'paragraph',
-        paragraph: {
-          rich_text: [{ text: { content: p.slice(0, 2000) } }]
-        }
-      }));
+      const notionChildren = [
+        {
+          object: 'block',
+          type: 'quote',
+          quote: {
+            rich_text: [{ 
+              text: { 
+                content: `⚙️ ZADÁNÍ PRO AI:\n• Hrdina: ${inputDetails.heroName}\n• Věk: ${inputDetails.age}\n• Atmosféra: ${inputDetails.tension}\n• Délka: ${inputDetails.length}\n• Téma: ${inputDetails.theme}` 
+              } 
+            }]
+          }
+        },
+        { object: 'block', type: 'divider', divider: {} },
+        ...paragraphs.map(p => ({
+          object: 'block',
+          type: 'paragraph',
+          paragraph: { rich_text: [{ text: { content: p.slice(0, 2000) } }] }
+        }))
+      ];
 
       const notionResponse = await fetch('https://api.notion.com/v1/pages', {
         method: 'POST',
@@ -72,41 +90,21 @@ export default async function handler(req, res) {
         },
         body: JSON.stringify({
           parent: { database_id: notionDatabaseId },
-          // UKLÁDÁNÍ DO SAMOSTATNÝCH SLOUPCŮ
           properties: {
-            "Name": {
-              "title": [{ "text": { "content": title } }]
-            },
-            "Hrdina": {
-              "rich_text": [{ "text": { "content": inputDetails.heroName || "" } }]
-            },
-            "Věk": {
-              "rich_text": [{ "text": { "content": inputDetails.age || "" } }]
-            },
-            "Atmosféra": {
-              "rich_text": [{ "text": { "content": inputDetails.tension || "" } }]
-            },
-            "Délka": {
-              "rich_text": [{ "text": { "content": inputDetails.length || "" } }]
-            },
-            "Téma": {
-              "rich_text": [{ "text": { "content": inputDetails.theme || "" } }]
-            }
+            "Name": { "title": [{ "text": { "content": title } }] },
+            "Hrdina": { "rich_text": [{ "text": { "content": inputDetails.heroName || "" } }] },
+            "Věk": { "rich_text": [{ "text": { "content": inputDetails.age || "" } }] },
+            "Atmosféra": { "rich_text": [{ "text": { "content": inputDetails.tension || "" } }] },
+            "Délka": { "rich_text": [{ "text": { "content": inputDetails.length || "" } }] },
+            "Téma": { "rich_text": [{ "text": { "content": inputDetails.theme || "" } }] }
           },
           children: notionChildren
         })
       });
 
-      if (notionResponse.ok) {
-        notionStatus = "Uspěšně uloženo";
-      } else {
-        const notionErrData = await notionResponse.json();
-        notionStatus = "Chyba Notion API";
-        notionErrorDetails = notionErrData.message || "Zkontroluj názvy sloupců v Notionu.";
-      }
+      if (notionResponse.ok) notionStatus = "Uspěšně uloženo";
     } catch (notionErr) {
-      notionStatus = "Chyba sítě Notion";
-      notionErrorDetails = notionErr.message;
+      console.error(notionErr);
     }
   }
 
