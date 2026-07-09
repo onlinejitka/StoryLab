@@ -1,3 +1,57 @@
+import React from 'react';
+// Ujistěte se, že máte v projektu generátoru nainstalované lucide-react (npm i lucide-react)
+import { BookOpen, HelpCircle, Sparkles } from 'lucide-react';
+
+export default function SubdomainHeader() {
+  return (
+    <header class="border-b border-slate-800/60 bg-slate-950/40 backdrop-blur sticky top-0 z-50">
+      <div class="max-w-6xl mx-auto px-4 h-20 flex items-center justify-between">
+        
+        {/* Logo - na subdoméně kliknutí vrátí uživatele na hlavní web */}
+        <a href="https://nocniknihovna.cz" class="flex items-center space-x-3 cursor-pointer">
+          <span class="text-3xl">🌙</span>
+          <div>
+            <h1 class="text-xl font-bold tracking-wide text-amber-400">Noční Knihovna</h1>
+            <p class="text-xs text-slate-400">Klidné usínání plné příběhů</p>
+          </div>
+        </a>
+        
+        {/* Navigace se zrcadlovým stavem (Generátor je aktivní) */}
+        <nav class="flex items-center space-x-1 md:space-x-2 bg-slate-900/60 p-1.5 rounded-full border border-slate-800">
+          
+          {/* 1. Odkaz: Knihovna (směřuje zpět na hlavní web) */}
+          <a 
+            href="https://nocniknihovna.cz"
+            class="px-3 md:px-4 py-1.5 rounded-full text-xs md:text-sm font-medium transition flex items-center space-x-1.5 text-slate-400 hover:text-slate-200"
+          >
+            <BookOpen size={14} /> <span>Knihovna</span>
+          </a>
+          
+          {/* 2. Odkaz: Hádanky (směřuje na sekci hádanek na hlavním webu) */}
+          <a 
+            href="https://nocniknihovna.cz/hadanky"
+            class="px-3 md:px-4 py-1.5 rounded-full text-xs md:text-sm font-medium transition flex items-center space-x-1.5 text-slate-400 hover:text-slate-200"
+          >
+            <HelpCircle size={14} /> <span>Hádanky</span>
+          </a>
+
+          {/* 3. Odkaz: Generátor (zde svítí žlutě, protože jsme v něm) */}
+          <a 
+            href="https://generator.nocniknihovna.cz"
+            class="px-3 md:px-4 py-1.5 rounded-full text-xs md:text-sm font-bold transition flex items-center space-x-1.5 bg-amber-400 text-slate-950 shadow-md shadow-amber-400/10"
+          >
+            <Sparkles size={14} /> 
+            <span>Generátor <span class="hidden sm:inline">pohádek</span></span>
+          </a>
+          
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+
+
 import React, { useState, useEffect } from 'react';
 
 const SURPRISE_POOL = [
@@ -442,3 +496,9 @@ export default function App() {
     </div>
   );
 }
+
+
+<footer class="border-t border-slate-900 mt-20 bg-slate-950/60 text-slate-500 py-8 text-center text-xs">
+  <p>© {new Date().getFullYear()} Noční Knihovna. Všechna práva vyhrazena.</p>
+  <p class="mt-1 text-slate-600">Čtené s láskou, kreslené a vybarvené ručně.</p>
+</footer>
