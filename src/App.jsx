@@ -4,7 +4,7 @@ const SURPRISE_POOL = [
   { name: "Bella a David", age: "5-7", tension: 2, length: "medium", theme: "Sžívání se s Lukášem – novým partnerem maminky. Bella ho má ráda, ale David se schovává do svého bunkru and AI pomůže najít společnou pohádkovou řeč." },
   { name: "Anička", age: "2-4", tension: 1, length: "short", theme: "Skřítek Ponožkovník schovává věci po pokoji, protože z nich staví tajný koráb pro medvídky." },
   { name: "Kryštof", age: "8-12", tension: 4, length: "long", theme: "Nález starého svítícího krystalu v jeskyni pod školou, který otevírá portál do světa, kde se mluví pozpátku." },
-  { name: "Max", age: "13+", tension: 5, length: "medium", theme: "Digitální virus infikoval holografické město a hlavní hrdina micro vyřešit logickou hádanku starého mainframe systému." },
+  { name: "Max", age: "13+", tension: 5, length: "medium", theme: "Digitální virus infikoval holografické město a hlavní hrdina musí vyřešit logickou hádanku starého mainframe systému." },
   { name: "Elenka", age: "5-7", tension: 3, length: "medium", theme: "Jak překonat strach ze tmy a z hluků za oknem, které ve skutečnosti dělá zapomnětlivý větrný meluzínek." }
 ];
 
@@ -133,7 +133,7 @@ export default function App() {
     
     const lengthLabels = { 
       short: 'KRÁTKÝ příběh (rychlovka před spaním, cca 3 až 4 odstavce).', 
-      medium: 'VELMI DLOUHÝ, POCTIVÝ PŘÍBĚH. Instrukce: Napiš minimálně 12 až 18 rozsáhlých and detailních odstavců. Děj nesmí utíkat rychle, věnuj se detailnímu popisu prostředí, pocitům postav, rozvíjej dlouhé a hluboké dialogy mezi hrdiny. Text musí být dostatečně dlouhý na 10 minut souvislého čtení!', 
+      medium: 'VELMI DLOUHÝ, POCTIVÝ PŘÍBENS. Instrukce: Napiš minimálně 12 až 18 rozsáhlých and detailních odstavců. Děj nesmí utíkat rychle, věnuj se detailnímu popisu prostředí, pocitům postav, rozvíjej dlouhé a hluboké dialogy mezi hrdiny. Text musí být dostatečně dlouhý na 10 minut souvislého čtení!', 
       long: 'EPICKÝ ROZSÁHLÝ EPOS ROZDĚLENÝ NA KAPITOLY (např. Kapitola I, Kapitola II, Kapitola III). Instrukce: Vygeneruj obří literární dílo o minimálně 25 až 35 bohatých odstavcích. Piš maximálně barvitě, rozvíjej vedlejší zápletky, popisy scén a dramatické rozhovory, aby čtení trvalo přes 20 minut!' 
     };
 
@@ -249,7 +249,7 @@ export default function App() {
                 required 
               />
               <a 
-                href="https://www.forendors.cz" target="_blank" rel="noreferrer"
+                href="https://www.forendors.cz/nocniknihovna" target="_blank" rel="noreferrer"
                 className="text-[10px] text-emerald-400 hover:text-emerald-300 font-bold hover:underline pt-0.5 block"
               >
                 Nemáš kód? Získej ho na Forendors ➔
@@ -305,7 +305,7 @@ export default function App() {
           </form>
         </div>
 
-        {/* PROSTŘEDNÍ PANEL - AKTUALIZOVANÁ EXKLUZIVNÍ FORENDORS INFORMAČNÍ STRÁNKA */}
+        {/* PROSTŘEDNÍ PANEL */}
         <div className="lg:col-span-6 bg-[#120e24]/30 border border-purple-950/20 rounded-2xl p-6 flex flex-col min-h-[550px] justify-center items-center relative">
           
           {error && (
@@ -313,7 +313,7 @@ export default function App() {
               <span>{error}</span>
               {error.includes("kód") && (
                 <a 
-                  href="https://www.forendors.cz" target="_blank" rel="noreferrer" 
+                  href="https://www.forendors.cz/nocniknihovna" target="_blank" rel="noreferrer" 
                   className="mt-1 bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg font-bold transition block text-center text-xs"
                 >
                   👉 Chci získat kód na Forendors
@@ -331,7 +331,7 @@ export default function App() {
               
               <div className="text-purple-200 text-sm space-y-3 leading-relaxed text-justify px-2">
                 <p>
-                  Tato aplikace se momentálně nachází v uzavřené testovací fázi a přístup do ní mají <strong>přednostně naši předplatitelé na platformě Forendors</strong></p>.
+                  Tato aplikace se momentálně nachází v uzavřené testovací fázi a přístup do ní mají <strong>přednostně naši předplatitelé na platformě Forendors</strong>.
                 </p>
                 <p>
                   Předplatné stojí <strong>jen 75 Kč</strong>, podpoříte tím rozvoj tohoto projektu a okamžitě získáte <strong>tajný přístupový kód</strong>, se kterým si můžete vygenerovat neomezené množství unikátních personalizovaných pohádek přímo pro vaše děti.
@@ -348,9 +348,7 @@ export default function App() {
               </div>
                 
               <p className="text-[10px] text-purple-400/50 italic pt-2">
-                Máte kód?
-      Vložte ho do pole v levém horním rohu, vyplňte si co potřebujete pro vytvoření ideálního příběhu,
-        a klikněte na tlačítko Vykovat příběh.
+                Máte kód? Vložte ho do pole v levém horním rohu, vyplňte si co potřebujete pro vytvoření ideálního příběhu, a klikněte na tlačítko Vykovat příběh.
               </p>
             </div>
           )}
@@ -401,7 +399,7 @@ export default function App() {
               ) : (
                 <>
                   {freeStories.map((item) => (
-                    <button key={item.id} type="button" onClick={() => handleSelectHistoryStory(item)} className={`w-full text-left p-2.5 rounded-xl border text-xs transition block truncate ${story?.id === item.id ? 'bg-emerald-950/20 border-emerald-500 text-emerald-300' : 'bg-[#191433] border-purple-950 text-purple-200 hover:border-purple-800'}`}>
+                    <button key={item.id} type="button" onClick={() => handleSelectHistoryStory(item)} className={`w-full text-left p-2.5 rounded-xl border text-xs transition block truncate ${story?.id === item.id ? 'bg-emerald-950/20 border-emerald-500 text-emerald-300' : 'bg-[#191433] border-purple-920 text-purple-200 hover:border-purple-800'}`}>
                       <span className="font-bold block truncate text-xs text-emerald-400 mb-0.5">📖 {item.title}</span>
                       <span className="text-[10px] text-purple-400/50 block">Klikni pro otevření</span>
                     </button>
@@ -432,7 +430,7 @@ export default function App() {
             <h3 className="text-base font-black text-amber-400 mb-1">Mistr Kovář VIP</h3>
             <p className="text-[11px] text-purple-300 mb-4 leading-relaxed">Odemkni ultra-realistické předčítání přes **ElevenLabs**, neomezenou historii a sdílení s ostatními rodinami.</p>
             <a 
-              href="https://www.forendors.cz" target="_blank" rel="noreferrer"
+              href="https://www.forendors.cz/nocniknihovna" target="_blank" rel="noreferrer"
               className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl block text-center hover:from-amber-400 transition shadow"
             >
               Aktivovat na Forendors
