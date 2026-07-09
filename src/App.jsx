@@ -1,3 +1,5 @@
+import { BookOpen, HelpCircle, Sparkles } from 'lucide-react';
+
 import React from 'react';
 // Ujistěte se, že máte v projektu generátoru nainstalované lucide-react (npm i lucide-react)
 import { BookOpen, HelpCircle, Sparkles } from 'lucide-react';
