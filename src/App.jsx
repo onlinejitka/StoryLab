@@ -4,7 +4,7 @@ const SURPRISE_POOL = [
   { name: "Bella a David", age: "5-7", tension: 2, length: "medium", theme: "Sžívání se s Lukášem – novým partnerem maminky. Bella ho má ráda, ale David se schovává do svého bunkru and AI pomůže najít společnou pohádkovou řeč." },
   { name: "Anička", age: "2-4", tension: 1, length: "short", theme: "Skřítek Ponožkovník schovává věci po pokoji, protože z nich staví tajný koráb pro medvídky." },
   { name: "Kryštof", age: "8-12", tension: 4, length: "long", theme: "Nález starého svítícího krystalu v jeskyni pod školou, který otevírá portál do světa, kde se mluví pozpátku." },
-  { name: "Max", age: "13+", tension: 5, length: "medium", theme: "Digitální virus infikoval holografické město a hlavní hrdina musí vyřešit logickou hádanku starého mainframe systému." },
+  { name: "Max", age: "13+", tension: 5, length: "medium", theme: "Digitální virus infikoval holografické město a hlavní hrdina micro vyřešit logickou hádanku starého mainframe systému." },
   { name: "Elenka", age: "5-7", tension: 3, length: "medium", theme: "Jak překonat strach ze tmy a z hluků za oknem, které ve skutečnosti dělá zapomnětlivý větrný meluzínek." }
 ];
 
@@ -15,7 +15,6 @@ export default function App() {
   const [theme, setTheme] = useState('');
   const [length, setLength] = useState('medium');
 
-  // Bezpečné načtení tajného hesla
   const [passcode, setPasscode] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
@@ -55,7 +54,6 @@ export default function App() {
 
   useEffect(() => {
     fetchHistory();
-    // Bezpečně načteme uložený kód z prohlížeče po startu
     const savedCode = localStorage.getItem('sl_passcode');
     if (savedCode) setPasscode(savedCode);
   }, []);
@@ -128,7 +126,6 @@ export default function App() {
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     setIsPlaying(false);
 
-    // Uložíme kód pro příště do prohlížeče
     if (passcode) localStorage.setItem('sl_passcode', passcode);
 
     const ageLabels = { '2-4': '2-4 roky', '5-7': '5-7 let', '8-12': '8-12 let', '13+': '13+ let' };
@@ -136,11 +133,11 @@ export default function App() {
     
     const lengthLabels = { 
       short: 'KRÁTKÝ příběh (rychlovka před spaním, cca 3 až 4 odstavce).', 
-      medium: 'VELMI DLOUHÝ, POCTIVÝ PŘÍBĚH. Instrukce: Napiš minimálně 12 až 18 rozsáhlých a detailních odstavců. Děj nesmí utíkat rychle, věnuj se detailnímu popisu prostředí, pocitům postav, rozvíjej dlouhé a hluboké dialogy mezi hrdiny. Text musí být dostatečně dlouhý na 10 minut souvislého čtení!', 
+      medium: 'VELMI DLOUHÝ, POCTIVÝ PŘÍBĚH. Instrukce: Napiš minimálně 12 až 18 rozsáhlých and detailních odstavců. Děj nesmí utíkat rychle, věnuj se detailnímu popisu prostředí, pocitům postav, rozvíjej dlouhé a hluboké dialogy mezi hrdiny. Text musí být dostatečně dlouhý na 10 minut souvislého čtení!', 
       long: 'EPICKÝ ROZSÁHLÝ EPOS ROZDĚLENÝ NA KAPITOLY (např. Kapitola I, Kapitola II, Kapitola III). Instrukce: Vygeneruj obří literární dílo o minimálně 25 až 35 bohatých odstavcích. Piš maximálně barvitě, rozvíjej vedlejší zápletky, popisy scén a dramatické rozhovory, aby čtení trvalo přes 20 minut!' 
     };
 
-    const systemPrompt = `Jsi špičkový spisovatel knih pro děti a mládež. Tvým úkolem je napsat originální a dechberoucí příběh v češtině.
+    const systemPrompt = `Jsi špičkový spisovatel knih pro dětí a mládež. Tvým úkolem je napsat originální a dechberoucí příběh v češtině.
     CRITICAL GRAMMAR RULE: Podívej se na jméno hrdiny a přizpůsob tomu koncovky sloves v minulém čase (odešel vs odešla). Pokud je hrdinů více (např. Bella a David), používej množné číslo (odešli, objevili). V textu nesmí být ŽÁDNÁ rodová lomítka ani závorky!
     CRITICAL LENGTH COMMAND: Striktně a nekompromisně dodrž pokyny pro rozsah v parametru Délka. Umělá inteligence má tendenci texty zkracovat – ty máš ale příkaz psát extrémně detailně, rozvláčně, používat bohatou slovní zásobu a generovat obrovské množství textu, pokud je vyžádán střední či dlouhý rozsah.
     STRICT FORMATTING RULE: Tvůj výstup musí striktně dodržet formátování:
@@ -163,7 +160,6 @@ export default function App() {
     };
 
     try {
-      // Posíláme na server i zadný passcode
       const response = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -244,7 +240,6 @@ export default function App() {
           <h2 className="text-lg font-bold text-emerald-400 tracking-wide">Kovárna Příběhů</h2>
           <form onSubmit={handleForgeStory} className="space-y-5">
             
-            {/* POLÍČKO PRO PŘÍSTUPOVÝ KÓD Z FORENDORS */}
             <div className="bg-purple-950/20 border border-purple-900/40 p-3 rounded-xl space-y-2">
               <label className="block text-[10px] font-bold uppercase tracking-widest text-amber-400">🔑 Přístupový kód</label>
               <input 
@@ -310,7 +305,7 @@ export default function App() {
           </form>
         </div>
 
-        {/* PROSTŘEDNÍ PANEL */}
+        {/* PROSTŘEDNÍ PANEL - AKTUALIZOVANÁ EXKLUZIVNÍ FORENDORS INFORMAČNÍ STRÁNKA */}
         <div className="lg:col-span-6 bg-[#120e24]/30 border border-purple-950/20 rounded-2xl p-6 flex flex-col min-h-[550px] justify-center items-center relative">
           
           {error && (
@@ -330,10 +325,31 @@ export default function App() {
           {notionWarning && <div className="p-3 bg-amber-950/30 border border-amber-500/20 text-amber-300 text-[11px] rounded-xl w-full text-center mb-4">{notionWarning}</div>}
 
           {!isLoading && !story && (
-            <div className="text-center p-8 max-w-sm space-y-3">
-              <span className="text-5xl block opacity-40">📖</span>
-              <h3 className="text-lg font-bold text-purple-200">Kniha osudů čeká</h3>
-              <p className="text-purple-400/50 text-sm">Zadej parametry vlevo, stiskni tlačítko a vyraz na kouzelnou cestu. Tvá osobní knižní sbírka se začne plnit unikátními příběhy.</p>
+            <div className="text-center p-6 max-w-md space-y-4 border border-purple-950/60 bg-[#120e24]/50 rounded-2xl shadow-xl animate-fadeIn">
+              <span className="text-5xl block filter drop-shadow-[0_0_15px_rgba(245,158,11,0.2)]">✨🚀✨</span>
+              <h3 className="text-xl font-black text-amber-400 tracking-wide">StoryLab: Exkluzivní testování</h3>
+              
+              <div className="text-purple-200 text-sm space-y-3 leading-relaxed text-justify px-2">
+                <p>
+                  Tato aplikace se momentálně nachází v uzavřené testovací fázi a přístup do ní mají **přednostně moji předplatitelé na platformě Forendors**.
+                </p>
+                <p>
+                  Předplatné stojí **pouhých 75 Kč**, podpoříte tím vznik tohoto projektu a okamžitě získáte **tajný přístupový kód**, se kterým si můžete vygenerovat neomezené množství unikátních personalizovaných pohádek přímo pro vaše děti.
+                </p>
+              </div>
+
+              <div className="pt-2">
+                <a 
+                  href="https://www.forendors.cz" target="_blank" rel="noreferrer"
+                  className="inline-block bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-slate-950 font-black text-xs px-6 py-3 rounded-xl transition shadow-lg tracking-wider uppercase"
+                >
+                  Získat kód za 75 Kč na Forendors ➔
+                </a>
+              </div>
+              
+              <p className="text-[10px] text-purple-400/50 italic pt-2">
+                Máte kód? Vložte ho do pole v levém horním rohu, vyplňte jméno hrdiny a stiskněte Vykovat příběh.
+              </p>
             </div>
           )}
 
@@ -383,17 +399,11 @@ export default function App() {
               ) : (
                 <>
                   {freeStories.map((item) => (
-                    <button 
-                      key={item.id} 
-                      type="button"
-                      onClick={() => handleSelectHistoryStory(item)}
-                      className={`w-full text-left p-2.5 rounded-xl border text-xs transition block truncate ${story?.id === item.id ? 'bg-emerald-950/20 border-emerald-500 text-emerald-300' : 'bg-[#191433] border-purple-950 text-purple-200 hover:border-purple-800'}`}
-                    >
+                    <button key={item.id} type="button" onClick={() => handleSelectHistoryStory(item)} className={`w-full text-left p-2.5 rounded-xl border text-xs transition block truncate ${story?.id === item.id ? 'bg-emerald-950/20 border-emerald-500 text-emerald-300' : 'bg-[#191433] border-purple-950 text-purple-200 hover:border-purple-800'}`}>
                       <span className="font-bold block truncate text-xs text-emerald-400 mb-0.5">📖 {item.title}</span>
                       <span className="text-[10px] text-purple-400/50 block">Klikni pro otevření</span>
                     </button>
                   ))}
-
                   {lockedCount > 0 && (
                     <div className="p-3 rounded-xl border border-dashed border-purple-950/60 bg-purple-950/10 flex flex-col items-center justify-center text-center mt-2 space-y-1">
                       <span className="text-sm">🔒</span>
