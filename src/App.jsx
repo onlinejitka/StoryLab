@@ -16,7 +16,7 @@ export default function App() {
   const [length, setLength] = useState('medium');
 
   const [passcode, setPasscode] = useState('');
-  const [passcodeStatus, setPasscodeStatus] = useState(''); // Stav pro vizuální potvrzení kódu
+  const [passcodeStatus, setPasscodeStatus] = useState(''); 
 
   const [isLoading, setIsLoading] = useState(false);
   const [currentLoadingText, setCurrentLoadingText] = useState('');
@@ -75,7 +75,6 @@ export default function App() {
     return () => clearInterval(interval);
   }, [isLoading]);
 
-  // Funkce pro samostatné ruční potvrzení kódu tlačítkem
   const handleConfirmPasscode = () => {
     if (!passcode.trim()) {
       setPasscodeStatus('❌ Kód nesmí být prázdný');
@@ -148,7 +147,7 @@ export default function App() {
     
     const lengthLabels = { 
       short: 'KRÁTKÝ příběh (rychlovka před spaním, cca 3 až 4 odstavce).', 
-      medium: 'VELMI DLOUHÝ, POCTIVÝ PŘÍBENS. Instrukce: Napiš minimálně 12 až 18 rozsáhlých and detailních odstavců. Děj nesmí utíkat rychle, věnuj se detailnímu popisu prostředí, pocitům postav, rozvíjej dlouhé a hluboké dialogy mezi hrdiny. Text musí být dostatečně dlouhý na 10 minut souvislého čtení!', 
+      medium: 'VELMI DLOUHÝ, POCTIVÝ PŘÍBĚH. Instrukce: Napiš minimálně 12 až 18 rozsáhlých and detailních odstavců. Děj nesmí utíkat rychle, věnuj se detailnímu popisu prostředí, pocitům postav, rozvíjej dlouhé a hluboké dialogy mezi hrdiny. Text musí být dostatečně dlouhý na 10 minut souvislého čtení!', 
       long: 'EPICKÝ ROZSÁHLÝ EPOS ROZDĚLENÝ NA KAPITOLY (např. Kapitola I, Kapitola II, Kapitola III). Instrukce: Vygeneruj obří literární dílo o minimálně 25 až 35 bohatých odstavcích. Piš maximálně barvitě, rozvíjej vedlejší zápletky, popisy scén a dramatické rozhovory, aby čtení trvalo přes 20 minut!' 
     };
 
@@ -159,7 +158,6 @@ export default function App() {
     [NAZEV] Sem název příběhu
     [TEXT] Sem text příběhu rozdělený do odstavců.`;
 
-    // Inteligentní záložní řešení pro prázdná políčka
     const finalHeroName = heroName.trim() ? heroName : "Vymysli náhodné české dětské jméno hlavního hrdiny";
     const finalTheme = theme.trim() ? theme : "Libovolné originální, milé a magické dobrodružství plné ponaučení vhodné pro daný věk";
 
@@ -241,129 +239,160 @@ export default function App() {
   const lockedCount = savedStories.length > 3 ? savedStories.length - 3 : 0;
 
   return (
-    <div className="min-h-screen bg-[#09070f] text-gray-100 font-sans antialiased p-4 md:p-8">
-      <header className="max-w-7xl mx-auto mb-8 flex justify-between items-center border-b border-purple-950/40 pb-4">
-        <span className="text-2xl font-black tracking-wider bg-gradient-to-r from-emerald-400 via-teal-400 to-amber-400 bg-clip-text text-transparent">StoryLab</span>
-        <button 
-          type="button" onClick={handleSurpriseMe}
-          className="bg-amber-500/10 border border-amber-500/40 hover:bg-amber-500/20 text-amber-400 text-xs font-bold px-4 py-2 rounded-xl transition shadow shadow-amber-500/5"
-        >
-          🎲 PŘEKVAP MĚ
-        </button>
-      </header>
-
-      <main className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        {/* LEVÝ PANEL */}
-        <div className="lg:col-span-3 bg-[#120e24] border border-purple-950/40 rounded-2xl p-5 shadow-xl space-y-5 h-fit">
-          <h2 className="text-lg font-bold text-emerald-400 tracking-wide">Kovárna Příběhů</h2>
-          <form onSubmit={handleForgeStory} className="space-y-5">
-            
-            {/* PRÉMIOVÝ BOX S KÓDEM + NOVÝM TLAČÍTKEM PRO POTVRZENÍ */}
-            <div className="bg-purple-950/20 border border-purple-900/40 p-3 rounded-xl space-y-2">
-              <label className="block text-[10px] font-bold uppercase tracking-widest text-amber-400">🔑 Přístupový kód</label>
-              <input 
-                type="password" value={passcode} onChange={(e) => setPasscode(e.target.value)} 
-                placeholder="Vlož tajný kód z profilu..." 
-                className="w-full bg-[#191433] border border-purple-900/60 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-amber-500"
-                required 
-              />
-              
-              {/* TLAČÍTKO PRO POTVRZENÍ KÓDU */}
-              <button 
-                type="button" 
-                onClick={handleConfirmPasscode}
-                className="w-full bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/25 text-amber-400 text-[11px] font-bold py-1.5 rounded-lg transition"
-              >
-                Potvrdit kód ➔
-              </button>
-
-              {/* Malá vizuální nápověda stavu kódu */}
-              {passcodeStatus && (
-                <span className={`text-[10px] block text-center font-medium ${passcodeStatus.includes('✓') ? 'text-emerald-400' : 'text-red-400'}`}>
-                  {passcodeStatus}
-                </span>
-              )}
-
-              <a 
-                href="https://www.forendors.cz/nocniknihovna" target="_blank" rel="noreferrer"
-                className="text-[10px] text-emerald-400 hover:text-emerald-300 font-bold hover:underline pt-0.5 block text-center"
-              >
-                Nemáš kód? Získej ho na Forendors ➔
-              </a>
+    <div className="min-h-screen bg-[#09070f] text-gray-100 font-sans antialiased">
+      
+      {/* 🌙 ŽIVÉ HLAVNÍ MENU Z WEBU NOČNÍ KNIHOVNA */}
+      <nav className="w-full bg-[#0c0a16] border-b border-purple-950/40 px-4 py-4 md:px-8 shadow-lg">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+          
+          {/* LOGO SEKCE - ZABALENO DO ODKAZU NA HLAVNÍ WEBOVOU DOMÉNU */}
+          <a href="https://www.nocniknihovna.cz" className="flex items-center gap-3 group hover:opacity-90 transition cursor-pointer">
+            <span className="text-3xl filter drop-shadow-[0_0_10px_rgba(245,158,11,0.3)]">🌙</span>
+            <div className="flex flex-col">
+              <span className="font-black text-lg tracking-wide text-amber-400 group-hover:text-amber-300 transition">
+                Noční Knihovna
+              </span>
+              <span className="text-[10px] text-purple-300/60 font-medium tracking-wider">
+                Klidné usínání plné příběhů
+              </span>
             </div>
+          </a>
+          
+          {/* ADAPTIVNÍ ODKAZY Z HLAVNÍHO WEBU */}
+          <div className="flex items-center gap-2 md:gap-3 text-xs font-bold">
+            <a href="https://www.nocniknihovna.cz/knihovna" className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-purple-950/20 border border-purple-900/40 text-purple-200 hover:text-white transition">
+              📚 Knihovna
+            </a>
+            <a href="https://www.nocniknihovna.cz/hadanky" className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-purple-950/20 border border-purple-900/40 text-purple-200 hover:text-white transition">
+              ❓ Hádanky
+            </a>
+            <div className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow shadow-amber-500/10 select-none">
+              ✨ Generátor pohádek
+            </div>
+          </div>
 
-            {/* ODSTRANĚNO REQUIRED - JMÉNO NENÍ POVINNÉ */}
-            <div>
-              <label className="block text-[11px] font-semibold uppercase tracking-wider text-purple-300 mb-1.5">Jméno hrdiny (nepovinné)</label>
-              <input type="text" value={heroName} onChange={(e) => setHeroName(e.target.value)} placeholder="Např. Eliška, David..." className="w-full bg-[#191433] border border-purple-900/40 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 text-sm" />
-            </div>
-            
-            <div>
-              <label className="block text-[11px] font-semibold uppercase tracking-wider text-purple-300 mb-1.5">Věk dobrodruha</label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                {[ 
-                  ['2-4', 'Batolata', '2-4 roky'], 
-                  ['5-7', 'Předškoláci', '5-7 let'], 
-                  ['8-12', 'Školáci', '8-12 let'], 
-                  ['13+', 'Mladí dospělí', '13+ let'] 
-                ].map(([id, label, ageRange]) => (
-                  <button key={id} type="button" onClick={() => setAgeGroup(id)} className={`p-2.5 rounded-xl border text-left transition flex flex-col justify-center ${ageGroup === id ? 'bg-emerald-950/30 border-emerald-500 text-white shadow-[0_0_10px_rgba(16,185,129,0.1)]' : 'bg-[#191433] border-purple-950 text-purple-300/60 hover:border-purple-900'}`}>
-                    <span className="font-bold text-xs block leading-tight">{label}</span>
-                    <span className="text-[10px] text-purple-400/40 block mt-0.5 font-normal">{ageRange}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <div className="flex justify-between text-[11px] font-semibold uppercase tracking-wider text-purple-300 mb-1.5">
-                <span>ÚROVEŇ NAPĚTÍ</span>
-                <span className="text-amber-400 font-bold">
-                  {tension === 1 && 'Usínací'} {tension === 2 && 'Pohodová'}
-                  {tension === 3 && 'Dobrodružná'} {tension === 4 && 'Napínavá'}
-                  {tension === 5 && 'Strašidelná'}
-                </span>
-              </div>
-              <input type="range" min="1" max="5" value={tension} onChange={(e) => setTension(Number(e.target.value))} className="w-full accent-emerald-500 h-1.5 bg-[#191433] rounded-lg appearance-none cursor-pointer" />
-            </div>
-
-            {/* ODSTRANĚNO REQUIRED - TÉMA NENÍ POVINNÉ */}
-            <div>
-              <label className="block text-[11px] font-semibold uppercase tracking-wider text-purple-300 mb-1.5">TÉMA / VÝZVA (nepovinné)</label>
-              <textarea value={theme} onChange={(e) => setTheme(e.target.value)} placeholder="O čem by měl příběh být? (nebo nechte prázdné)..." className="w-full bg-[#191433] border border-purple-900/40 rounded-xl px-3 py-2 text-sm text-white h-20 resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500/50" />
-            </div>
-
-            <div>
-              <label className="block text-[11px] font-semibold uppercase tracking-wider text-purple-300 mb-1.5">DÉLKA PŘÍBĚHU</label>
-              <div className="grid grid-cols-1 gap-1.5">
-                {[ ['short', 'Rychlovka (3 min)'], ['medium', 'Poctivý příběh (10 min)'], ['long', 'Epické dobrodružství'] ].map(([id, label]) => (
-                  <button key={id} type="button" onClick={() => setLength(id)} className={`p-2 rounded-xl border text-center text-xs font-bold transition ${length === id ? 'bg-amber-500/10 border-amber-500 text-white' : 'bg-[#191433] border-purple-950 text-purple-300/60 hover:border-purple-900'}`}>{label}</button>
-                ))}
-              </div>
-            </div>
-            <button type="submit" disabled={isLoading} className="w-full bg-gradient-to-r from-purple-600 via-emerald-500 to-amber-500 text-slate-950 font-black py-3 rounded-xl shadow-lg hover:opacity-95 text-sm tracking-wide">Vykovat příběh ✨</button>
-          </form>
         </div>
+      </nav>
 
-        {/* PROSTŘEDNÍ PANEL */}
-        <div className="lg:col-span-6 bg-[#120e24]/30 border border-purple-950/20 rounded-2xl p-6 flex flex-col min-h-[550px] justify-center items-center relative">
+      {/* HLAVNÍ OBSAH APLIKACE (PŘIDÁNY ODSTUPY OD MENU) */}
+      <div className="p-4 md:p-8 pt-6">
+        <header className="max-w-7xl mx-auto mb-8 flex justify-between items-center border-b border-purple-950/40 pb-4">
+          <span className="text-2xl font-black tracking-wider bg-gradient-to-r from-emerald-400 via-teal-400 to-amber-400 bg-clip-text text-transparent">StoryLab</span>
+          <button 
+            type="button" onClick={handleSurpriseMe}
+            className="bg-amber-500/10 border border-amber-500/40 hover:bg-amber-500/20 text-amber-400 text-xs font-bold px-4 py-2 rounded-xl transition shadow shadow-amber-500/5"
+          >
+            🎲 PŘEKVAP MĚ
+          </button>
+        </header>
+
+        <main className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {error && (
-            <div className="p-4 bg-red-950/40 border border-red-500/30 text-red-300 text-xs rounded-xl w-full text-center mb-4 flex flex-col items-center gap-2">
-              <span>{error}</span>
-              {error.includes("kód") && (
-                <a 
-                  href="https://www.forendors.cz/nocniknihovna" target="_blank" rel="noreferrer" 
-                  className="mt-1 bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg font-bold transition block text-center text-xs"
+          {/* LEVÝ PANEL */}
+          <div className="lg:col-span-3 order-2 lg:order-1 bg-[#120e24] border border-purple-950/40 rounded-2xl p-5 shadow-xl space-y-5 h-fit">
+            <h2 className="text-lg font-bold text-emerald-400 tracking-wide">Kovárna Příběhů</h2>
+            <form onSubmit={handleForgeStory} className="space-y-5">
+              
+              <div className="bg-purple-950/20 border border-purple-900/40 p-3 rounded-xl space-y-2">
+                <label className="block text-[10px] font-bold uppercase tracking-widest text-amber-400">🔑 Přístupový kód</label>
+                <input 
+                  type="password" value={passcode} onChange={(e) => setPasscode(e.target.value)} 
+                  placeholder="Vlož tajný kód z profilu..." 
+                  className="w-full bg-[#191433] border border-purple-900/60 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-amber-500"
+                  required 
+                />
+                
+                <button 
+                  type="button" 
+                  onClick={handleConfirmPasscode}
+                  className="w-full bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/25 text-amber-400 text-[11px] font-bold py-1.5 rounded-lg transition"
                 >
-                  👉 Chci získat kód na Forendors
+                  Potvrdit kód ➔
+                </button>
+
+                {passcodeStatus && (
+                  <span className={`text-[10px] block text-center font-medium ${passcodeStatus.includes('✓') ? 'text-emerald-400' : 'text-red-400'}`}>
+                    {passcodeStatus}
+                  </span>
+                )}
+
+                <a 
+                  href="https://www.forendors.cz/nocniknihovna" target="_blank" rel="noreferrer"
+                  className="text-[10px] text-emerald-400 hover:text-emerald-300 font-bold hover:underline pt-0.5 block text-center"
+                >
+                  Nemáš kód? Získej ho na Forendors ➔
                 </a>
-              )}
-            </div>
-          )}
-          
-          {notionWarning && <div className="p-3 bg-amber-950/30 border border-amber-500/20 text-amber-300 text-[11px] rounded-xl w-full text-center mb-4">{notionWarning}</div>}
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-purple-300 mb-1.5">Jméno hrdiny (nepovinné)</label>
+                <input type="text" value={heroName} onChange={(e) => setHeroName(e.target.value)} placeholder="Např. Eliška, David..." className="w-full bg-[#191433] border border-purple-900/40 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 text-sm" />
+              </div>
+              
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-purple-300 mb-1.5">Věk dobrodruha</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                  {[ 
+                    ['2-4', 'Batolata', '2-4 roky'], 
+                    ['5-7', 'Předškoláci', '5-7 let'], 
+                    ['8-12', 'Školáci', '8-12 let'], 
+                    ['13+', 'Mladí dospělí', '13+ let'] 
+                  ].map(([id, label, ageRange]) => (
+                    <button key={id} type="button" onClick={() => setAgeGroup(id)} className={`p-2.5 rounded-xl border text-left transition flex flex-col justify-center ${ageGroup === id ? 'bg-emerald-950/30 border-emerald-500 text-white shadow-[0_0_10px_rgba(16,185,129,0.1)]' : 'bg-[#191433] border-purple-950 text-purple-300/60 hover:border-purple-900'}`}>
+                      <span className="font-bold text-xs block leading-tight">{label}</span>
+                      <span className="text-[10px] text-purple-400/40 block mt-0.5 font-normal">{ageRange}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-[11px] font-semibold uppercase tracking-wider text-purple-300 mb-1.5">
+                  <span>ÚROVEŇ NAPĚTÍ</span>
+                  <span className="text-amber-400 font-bold">
+                    {tension === 1 && 'Usínací'} {tension === 2 && 'Pohodová'}
+                    {tension === 3 && 'Dobrodružná'} {tension === 4 && 'Napínavá'}
+                    {tension === 5 && 'Strašidelná'}
+                  </span>
+                </div>
+                <input type="range" min="1" max="5" value={tension} onChange={(e) => setTension(Number(e.target.value))} className="w-full accent-emerald-500 h-1.5 bg-[#191433] rounded-lg appearance-none cursor-pointer" />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-purple-300 mb-1.5">TÉMA / VÝZVA (nepovinné)</label>
+                <textarea value={theme} onChange={(e) => setTheme(e.target.value)} placeholder="O čem by měl příběh být? (nebo nechte prázdné)..." className="w-full bg-[#191433] border border-purple-900/40 rounded-xl px-3 py-2 text-sm text-white h-20 resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500/50" />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-purple-300 mb-1.5">DÉLKA PŘÍBĚHU</label>
+                <div className="grid grid-cols-1 gap-1.5">
+                  {[ ['short', 'Rychlovka (3 min)'], ['medium', 'Poctivý příběh (10 min)'], ['long', 'Epické dobrodružství'] ].map(([id, label]) => (
+                    <button key={id} type="button" onClick={() => setLength(id)} className={`p-2 rounded-xl border text-center text-xs font-bold transition ${length === id ? 'bg-amber-500/10 border-amber-500 text-white' : 'bg-[#191433] border-purple-950 text-purple-300/60 hover:border-purple-900'}`}>{label}</button>
+                  ))}
+                </div>
+              </div>
+              <button type="submit" disabled={isLoading} className="w-full bg-gradient-to-r from-purple-600 via-emerald-500 to-amber-500 text-slate-950 font-black py-3 rounded-xl shadow-lg hover:opacity-95 text-sm tracking-wide">Vykovat příběh ✨</button>
+            </form>
+          </div>
+
+          {/* PROSTŘEDNÍ PANEL */}
+          <div className="lg:col-span-6 order-1 lg:order-2 bg-[#120e24]/30 border border-purple-950/20 rounded-2xl p-6 flex flex-col min-h-[550px] justify-center items-center relative">
+            
+            {error && (
+              <div className="p-4 bg-red-950/40 border border-red-500/30 text-red-300 text-xs rounded-xl w-full text-center mb-4 flex flex-col items-center gap-2">
+                <span>{error}</span>
+                {error.includes("kód") && (
+                  <a 
+                    href="https://www.forendors.cz/nocniknihovna" target="_blank" rel="noreferrer" 
+                    className="mt-1 bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg font-bold transition block text-center text-xs"
+                  >
+                    👉 Chci získat kód na Forendors
+                  </a>
+                )}
+              </div>
+            )}
+            
+            {notionWarning && <div className="p-3 bg-amber-950/30 border border-amber-500/20 text-amber-300 text-[11px] rounded-xl w-full text-center mb-4">{notionWarning}</div>}
 
           {!isLoading && !story && (
             <div className="text-center p-6 max-w-md space-y-4 border border-purple-950/60 bg-[#120e24]/50 rounded-2xl shadow-xl animate-fadeIn">
@@ -375,7 +404,7 @@ export default function App() {
                   Tato aplikace se momentálně nachází v uzavřené testovací fázi a přístup do ní mají <strong>přednostně naši předplatitelé na platformě Forendors</strong>.
                 </p>
                 <p>
-                  Předplatné stojí <strong>jen 75 Kč</strong>, podpoříte tím rozvoj tohoto projektu a okamžitě získáte <strong>tajný přístupový kód</strong>, se kterým si můžete vygenerovat neomezené množství unikátních personalizovaných pohádek přímo pro vaše dětí.
+                  Předplatné stojí <strong>jen 75 Kč</strong>, podpoříte tím rozvoj tohoto projektu a okamžitě získáte <strong>tajný přístupový kód</strong>, se kterým si můžete vygenerovat neomezené množství unikátních personalizovaných pohádek přímo pro vaše děti.
                 </p>
               </div>
 
@@ -389,97 +418,98 @@ export default function App() {
               </div>
                 
               <p className="text-[10px] text-purple-400/50 italic pt-2">
-                Máte kód? Vložte ho do pole v levém horním rohu, vyplňte si co potřebujete pro vytvoření ideálního příběhu, a klikněte na tlačítko Vykovat příběh.
+                Máte kód? Vložte ho do pole níže (nebo v levém sloupci), vyplňte si parametry příběhu a klikněte na tlačítko Vykovat příběh. O všechno ostatní se postará AI.
               </p>
             </div>
           )}
 
-          {isLoading && (
-            <div className="text-center space-y-6">
-              <div className="w-14 h-14 mx-auto rounded-full border-4 border-purple-950 border-t-emerald-400 border-r-amber-400 animate-spin"></div>
-              <p className="text-purple-200 font-medium text-lg animate-pulse">{currentLoadingText}</p>
-            </div>
-          )}
-
-          {!isLoading && story && (
-            <div className="w-full space-y-6 animate-fadeIn">
-              {story.image && <img src={story.image} alt="Ilustrace" className="w-full h-56 object-cover rounded-xl border border-purple-950 shadow-md" />}
-              <div className="space-y-4">
-                <h3 className="text-2xl font-black text-amber-400 leading-tight border-b border-purple-950/40 pb-2">{story.title}</h3>
-                <div className="text-purple-50/95 leading-relaxed text-base md:text-lg text-justify max-h-[420px] overflow-y-auto pr-3 space-y-4 custom-scrollbar whitespace-pre-line font-medium">
-                  {story.text}
-                </div>
+            {isLoading && (
+              <div className="text-center space-y-6">
+                <div className="w-14 h-14 mx-auto rounded-full border-4 border-purple-950 border-t-emerald-400 border-r-amber-400 animate-spin"></div>
+                <p className="text-purple-200 font-medium text-lg animate-pulse">{currentLoadingText}</p>
               </div>
-              {story.text && (
-                <div className="pt-4 border-t border-purple-950/60 space-y-3">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-purple-300 font-medium">Hlas vypravěče:</span>
-                    <div className="bg-[#191433] p-0.5 rounded-lg border border-purple-950">
-                      <button onClick={() => setVoiceGender('female')} className={`px-3 py-1 text-xs rounded transition ${voiceGender === 'female' ? 'bg-emerald-600 text-white font-bold' : 'text-purple-400'}`}>Vypravěčka</button>
-                      <button onClick={() => setVoiceGender('male')} className={`px-3 py-1 text-xs rounded transition ${voiceGender === 'male' ? 'bg-emerald-600 text-white font-bold' : 'text-purple-400'}`}>Vypravěč</button>
-                    </div>
+            )}
+
+            {!isLoading && story && (
+              <div className="w-full space-y-6 animate-fadeIn">
+                {story.image && <img src={story.image} alt="Ilustrace" className="w-full h-56 object-cover rounded-xl border border-purple-950 shadow-md" />}
+                <div className="space-y-4">
+                  <h3 className="text-2xl font-black text-amber-400 leading-tight border-b border-purple-950/40 pb-2">{story.title}</h3>
+                  <div className="text-purple-50/95 leading-relaxed text-base md:text-lg text-justify max-h-[420px] overflow-y-auto pr-3 space-y-4 custom-scrollbar whitespace-pre-line font-medium">
+                    {story.text}
                   </div>
-                  <button onClick={handlePlayAudio} className="w-full py-3 bg-[#191433] border border-emerald-500/30 rounded-xl font-bold text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 text-sm">
-                    {isPlaying ? '🛑 Zastavit čtení' : '🔊 Přečíst příběh nahlas'}
-                  </button>
                 </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* PRAVÝ PANEL */}
-        <div className="lg:col-span-3 space-y-6">
-          <div className="bg-[#120e24] border border-purple-950/40 rounded-2xl p-4 shadow-xl flex flex-col max-h-[380px]">
-            <h3 className="text-xs font-bold text-purple-300 uppercase tracking-wider mb-3 border-b border-purple-950/50 pb-2">Moje Kovárna ({savedStories.length})</h3>
-            <div className="space-y-2 overflow-y-auto pr-1 custom-scrollbar flex-1">
-              {loadingHistory ? (
-                <p className="text-[11px] text-purple-400/40 text-center py-4 animate-pulse">Načítám příběhy...</p>
-              ) : savedStories.length === 0 ? (
-                <p className="text-[11px] text-purple-400/40 text-center py-4 italic">V knihovně zatím nic není...</p>
-              ) : (
-                <>
-                  {freeStories.map((item) => (
-                    <button key={item.id} type="button" onClick={() => handleSelectHistoryStory(item)} className={`w-full text-left p-2.5 rounded-xl border text-xs transition block truncate ${story?.id === item.id ? 'bg-emerald-950/20 border-emerald-500 text-emerald-300' : 'bg-[#191433] border-purple-920 text-purple-200 hover:border-purple-800'}`}>
-                      <span className="font-bold block truncate text-xs text-emerald-400 mb-0.5">📖 {item.title}</span>
-                      <span className="text-[10px] text-purple-400/50 block">Klikni pro otevření</span>
-                    </button>
-                  ))}
-                  {lockedCount > 0 && (
-                    <div className="p-3 rounded-xl border border-dashed border-purple-950/60 bg-purple-950/10 flex flex-col items-center justify-center text-center mt-2 space-y-1">
-                      <span className="text-sm">🔒</span>
-                      <span className="text-[11px] font-bold text-amber-400/90">+{lockedCount} dalších příběhů</span>
-                      <span className="text-[9px] text-purple-400 max-w-[150px] leading-tight">Historie nad 3 položky vyžaduje VIP členství.</span>
+                {story.text && (
+                  <div className="pt-4 border-t border-purple-950/60 space-y-3">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-purple-300 font-medium">Hlas vypravěče:</span>
+                      <div className="bg-[#191433] p-0.5 rounded-lg border border-purple-950">
+                        <button onClick={() => setVoiceGender('female')} className={`px-3 py-1 text-xs rounded transition ${voiceGender === 'female' ? 'bg-emerald-600 text-white font-bold' : 'text-purple-400'}`}>Vypravěčka</button>
+                        <button onClick={() => setVoiceGender('male')} className={`px-3 py-1 text-xs rounded transition ${voiceGender === 'male' ? 'bg-emerald-600 text-white font-bold' : 'text-purple-400'}`}>Vypravěč</button>
+                      </div>
                     </div>
-                  )}
-                </>
-              )}
+                    <button onClick={handlePlayAudio} className="w-full py-3 bg-[#191433] border border-emerald-500/30 rounded-xl font-bold text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 text-sm">
+                      {isPlaying ? '🛑 Zastavit čtení' : '🔊 Přečíst příběh nahlas'}
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* PRAVÝ PANEL */}
+          <div className="lg:col-span-3 order-3 space-y-6">
+            <div className="bg-[#120e24] border border-purple-950/40 rounded-2xl p-4 shadow-xl flex flex-col max-h-[380px]">
+              <h3 className="text-xs font-bold text-purple-300 uppercase tracking-wider mb-3 border-b border-purple-950/50 pb-2">Moje Kovárna ({savedStories.length})</h3>
+              <div className="space-y-2 overflow-y-auto pr-1 custom-scrollbar flex-1">
+                {loadingHistory ? (
+                  <p className="text-[11px] text-purple-400/40 text-center py-4 animate-pulse">Načítám příběhy...</p>
+                ) : savedStories.length === 0 ? (
+                  <p className="text-[11px] text-purple-400/40 text-center py-4 italic">V knihovně zatím nic není...</p>
+                ) : (
+                  <>
+                    {freeStories.map((item) => (
+                      <button key={item.id} type="button" onClick={() => handleSelectHistoryStory(item)} className={`w-full text-left p-2.5 rounded-xl border text-xs transition block truncate ${story?.id === item.id ? 'bg-emerald-950/20 border-emerald-500 text-emerald-300' : 'bg-[#191433] border-purple-920 text-purple-200 hover:border-purple-800'}`}>
+                        <span className="font-bold block truncate text-xs text-emerald-400 mb-0.5">📖 {item.title}</span>
+                        <span className="text-[10px] text-purple-400/50 block">Klikni pro otevření</span>
+                      </button>
+                    ))}
+                    {lockedCount > 0 && (
+                      <div className="p-3 rounded-xl border border-dashed border-purple-950/60 bg-purple-950/10 flex flex-col items-center justify-center text-center mt-2 space-y-1">
+                        <span className="text-sm">🔒</span>
+                        <span className="text-[11px] font-bold text-amber-400/90">+{lockedCount} dalších příběhů</span>
+                        <span className="text-[9px] text-purple-400 max-w-[150px] leading-tight">Historie nad 3 položky vyžaduje VIP členství.</span>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div className="bg-[#120e24] border border-purple-950/40 rounded-2xl p-4 opacity-30 relative overflow-hidden">
+              <div className="absolute inset-0 bg-[#09070f]/90 flex flex-col justify-center items-center text-center p-2 z-10">
+                <span className="text-amber-400 mb-1 text-sm">🔒</span>
+                <h4 className="text-xs font-bold text-white mb-0.5">Veřejná knihovna</h4>
+                <p className="text-[10px] text-purple-300">Pouze pro VIP členy.</p>
+              </div>
+              <h3 className="text-xs font-bold text-purple-400 mb-2">Veřejná knihovna</h3>
+              <div className="h-12 bg-[#191433] rounded-lg"></div>
+            </div>
+
+            <div className="bg-gradient-to-br from-emerald-500/10 via-purple-950/20 to-[#120e24] border border-emerald-500/20 rounded-2xl p-5 shadow-lg">
+              <h3 className="text-base font-black text-amber-400 mb-1">Mistr Kovář VIP</h3>
+              <p className="text-[11px] text-purple-300 mb-4 leading-relaxed">Odemkni ultra-realistické předčítání přes **ElevenLabs**, neomezenou historii a sdílení s ostatními rodinami.</p>
+              <a 
+                href="https://www.forendors.cz/nocniknihovna" target="_blank" rel="noreferrer"
+                className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl block text-center hover:from-amber-400 transition shadow"
+              >
+                Aktivovat na Forendors
+              </a>
             </div>
           </div>
 
-          <div className="bg-[#120e24] border border-purple-950/40 rounded-2xl p-4 opacity-30 relative overflow-hidden">
-            <div className="absolute inset-0 bg-[#09070f]/90 flex flex-col justify-center items-center text-center p-2 z-10">
-              <span className="text-amber-400 mb-1 text-sm">🔒</span>
-              <h4 className="text-xs font-bold text-white mb-0.5">Veřejná knihovna</h4>
-              <p className="text-[10px] text-purple-300">Pouze pro VIP členy.</p>
-            </div>
-            <h3 className="text-xs font-bold text-purple-400 mb-2">Veřejná knihovna</h3>
-            <div className="h-12 bg-[#191433] rounded-lg"></div>
-          </div>
-
-          <div className="bg-gradient-to-br from-emerald-500/10 via-purple-950/20 to-[#120e24] border border-emerald-500/20 rounded-2xl p-5 shadow-lg">
-            <h3 className="text-base font-black text-amber-400 mb-1">Mistr Kovář VIP</h3>
-            <p className="text-[11px] text-purple-300 mb-4 leading-relaxed">Odemkni ultra-realistické předčítání přes **ElevenLabs**, neomezenou historii a sdílení s ostatními rodinami.</p>
-            <a 
-              href="https://www.forendors.cz/nocniknihovna" target="_blank" rel="noreferrer"
-              className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl block text-center hover:from-amber-400 transition shadow"
-            >
-              Aktivovat na Forendors
-            </a>
-          </div>
-        </div>
-
-      </main>
+        </main>
+      </div>
     </div>
   );
 }
