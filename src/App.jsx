@@ -346,11 +346,11 @@ export default function App() {
                   Získat kód za 75 Kč na našem Forendors ➔
                 </a>
               </div>
-              
+                
               <p className="text-[10px] text-purple-400/50 italic pt-2">
                 Máte kód?
-      <br>Vložte ho do pole v levém horním rohu, vyplňte si co potřebujete pro vytvoření ideálního příběhu,</br>
-        <br>a klikněte na tlačítko Vykovat příběh.</br>
+      Vložte ho do pole v levém horním rohu, vyplňte si co potřebujete pro vytvoření ideálního příběhu,
+        a klikněte na tlačítko Vykovat příběh.
               </p>
             </div>
           )}
