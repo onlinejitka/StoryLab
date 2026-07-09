@@ -331,24 +331,26 @@ export default function App() {
               
               <div className="text-purple-200 text-sm space-y-3 leading-relaxed text-justify px-2">
                 <p>
-                  Tato aplikace se momentálně nachází v uzavřené testovací fázi a přístup do ní mají **přednostně moji předplatitelé na platformě Forendors**.
+                  Tato aplikace se momentálně nachází v uzavřené testovací fázi a přístup do ní mají <strong>přednostně naši předplatitelé na platformě Forendors</strong></p>.
                 </p>
                 <p>
-                  Předplatné stojí **pouhých 75 Kč**, podpoříte tím vznik tohoto projektu a okamžitě získáte **tajný přístupový kód**, se kterým si můžete vygenerovat neomezené množství unikátních personalizovaných pohádek přímo pro vaše děti.
+                  Předplatné stojí <strong>jen 75 Kč</strong>, podpoříte tím rozvoj tohoto projektu a okamžitě získáte <strong>tajný přístupový kód</strong>, se kterým si můžete vygenerovat neomezené množství unikátních personalizovaných pohádek přímo pro vaše děti.
                 </p>
               </div>
 
               <div className="pt-2">
                 <a 
-                  href="https://www.forendors.cz" target="_blank" rel="noreferrer"
+                  href="https://www.forendors.cz/nocniknihovna" target="_blank" rel="noreferrer"
                   className="inline-block bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-slate-950 font-black text-xs px-6 py-3 rounded-xl transition shadow-lg tracking-wider uppercase"
                 >
-                  Získat kód za 75 Kč na Forendors ➔
+                  Získat kód za 75 Kč na našem Forendors ➔
                 </a>
               </div>
               
               <p className="text-[10px] text-purple-400/50 italic pt-2">
-                Máte kód? Vložte ho do pole v levém horním rohu, vyplňte jméno hrdiny a stiskněte Vykovat příběh.
+                Máte kód?
+      <br>Vložte ho do pole v levém horním rohu, vyplňte si co potřebujete pro vytvoření ideálního příběhu,</br>
+        <br>a klikněte na tlačítko Vykovat příběh.</br>
               </p>
             </div>
           )}
