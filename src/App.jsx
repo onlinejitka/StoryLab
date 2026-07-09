@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
 const SURPRISE_POOL = [
-  { name: "Bella a David", age: "5-7", tension: 2, length: "medium", theme: "Sžívání se s Lukášem – novým partnerem maminky. Bella ho má ráda, ale David se schovává do svého bunkru a AI pomůže najít společnou pohádkovou řeč." },
+  { name: "Bella a David", age: "5-7", tension: 2, length: "medium", theme: "Sžívání se s Lukášem – novým partnerem maminky. Bella ho má ráda, ale David se schovává do svého bunkru and AI pomůže najít společnou pohádkovou řeč." },
   { name: "Anička", age: "2-4", tension: 1, length: "short", theme: "Skřítek Ponožkovník schovává věci po pokoji, protože z nich staví tajný koráb pro medvídky." },
-  { name: "Kryštof", age: "8-12", tension: 4, length: "long", theme: "Nález starého svítícího krystalu v jeskyni pod školou, který otevírá portál do světa, kde se mluví pozpátku." }
+  { name: "Kryštof", age: "8-12", tension: 4, length: "long", theme: "Nález starého svítícího krystalu v jeskyni pod školou, který otevírá portál do světa, kde se mluví pozpátku." },
+  { name: "Max", age: "13+", tension: 5, length: "medium", theme: "Digitální virus infikoval holografické město a hlavní hrdina musí vyřešit logickou hádanku starého mainframe systému." },
+  { name: "Elenka", age: "5-7", tension: 3, length: "medium", theme: "Jak překonat strach ze tmy a z hluků za oknem, které ve skutečnosti dělá zapomnětlivý větrný meluzínek." }
 ];
 
 export default function App() {
@@ -12,13 +14,15 @@ export default function App() {
   const [tension, setTension] = useState(3);
   const [theme, setTheme] = useState('');
   const [length, setLength] = useState('medium');
-  
-  const [passcode, setPasscode] = useState(() => localStorage.getItem('sl_passcode') || '');
+
+  // Bezpečné načtení tajného hesla
+  const [passcode, setPasscode] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
   const [currentLoadingText, setCurrentLoadingText] = useState('');
   const [story, setStory] = useState(null);
   const [error, setError] = useState(null);
+  const [notionWarning, setNotionWarning] = useState(null);
   
   const [savedStories, setSavedStories] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
@@ -27,10 +31,10 @@ export default function App() {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const loadingMessages = [
-    "Ověřuji tvé Forendors členství...",
     "Kovám tvůj příběh v magické výhni...",
     "Míchám ingredience čisté fantazie...",
     "Probouzím pohádkové postavy k životu...",
+    "Rozvíjím dlouhé kapitoly vyprávění...",
     "Učesávám českou gramatiku..."
   ];
 
@@ -51,6 +55,9 @@ export default function App() {
 
   useEffect(() => {
     fetchHistory();
+    // Bezpečně načteme uložený kód z prohlížeče po startu
+    const savedCode = localStorage.getItem('sl_passcode');
+    if (savedCode) setPasscode(savedCode);
   }, []);
 
   useEffect(() => {
@@ -69,6 +76,7 @@ export default function App() {
   const handleSurpriseMe = () => {
     const randomIndex = Math.floor(Math.random() * SURPRISE_POOL.length);
     const randomConfig = SURPRISE_POOL[randomIndex];
+    
     setHeroName(randomConfig.name);
     setAgeGroup(randomConfig.age);
     setTension(randomConfig.tension);
@@ -87,17 +95,25 @@ export default function App() {
     setIsLoading(true);
     setStory(null);
     setError(null);
+    setNotionWarning(null);
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     setIsPlaying(false);
-    setCurrentLoadingText("Otevírám starou kroniku...");
+    
+    setCurrentLoadingText("Otevírám starou kroniku a listuji v kapitolách...");
 
     try {
       const res = await fetch(`/api/story?id=${item.id}`);
-      if (!res.ok) throw new Error("Text příběhu se nepodařilo načíst.");
+      if (!res.ok) throw new Error("Text příběhu se nepodařilo ze sbírky stáhnout.");
+      
       const data = await res.json();
-      setStory({ id: item.id, title: data.title, text: data.text, image: getStoryImage(ageGroup) });
+      setStory({
+        id: item.id,
+        title: data.title,
+        text: data.text,
+        image: getStoryImage(ageGroup)
+      });
     } catch (err) {
-      setError(err.message || "Chyba při otevírání příběhu.");
+      setError(err.message || "Chyba při otevírání staršího příběhu.");
     } finally {
       setIsLoading(false);
     }
@@ -108,28 +124,46 @@ export default function App() {
     setIsLoading(true);
     setStory(null);
     setError(null);
+    setNotionWarning(null);
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     setIsPlaying(false);
 
-    localStorage.setItem('sl_passcode', passcode);
+    // Uložíme kód pro příště do prohlížeče
+    if (passcode) localStorage.setItem('sl_passcode', passcode);
 
     const ageLabels = { '2-4': '2-4 roky', '5-7': '5-7 let', '8-12': '8-12 let', '13+': '13+ let' };
     const tensionLabels = { 1: 'Klidná usínací', 2: 'Pohodová', 3: 'Dobrodružná', 4: 'Napínavá', 5: 'Strašidelná' };
+    
     const lengthLabels = { 
-      short: 'KRÁTKÝ příběh (cca 3 až 4 odstavce).', 
-      medium: 'VELMI DLOUHÝ, POCTIVÝ PŘÍBĚH na 10 minut čtení (12 až 18 odstavců).', 
-      long: 'EPICKÝ ROZSÁHLÝ EPOS NA KAPITOLY (25 až 35 odstavců).' 
+      short: 'KRÁTKÝ příběh (rychlovka před spaním, cca 3 až 4 odstavce).', 
+      medium: 'VELMI DLOUHÝ, POCTIVÝ PŘÍBĚH. Instrukce: Napiš minimálně 12 až 18 rozsáhlých a detailních odstavců. Děj nesmí utíkat rychle, věnuj se detailnímu popisu prostředí, pocitům postav, rozvíjej dlouhé a hluboké dialogy mezi hrdiny. Text musí být dostatečně dlouhý na 10 minut souvislého čtení!', 
+      long: 'EPICKÝ ROZSÁHLÝ EPOS ROZDĚLENÝ NA KAPITOLY (např. Kapitola I, Kapitola II, Kapitola III). Instrukce: Vygeneruj obří literární dílo o minimálně 25 až 35 bohatých odstavcích. Piš maximálně barvitě, rozvíjej vedlejší zápletky, popisy scén a dramatické rozhovory, aby čtení trvalo přes 20 minut!' 
     };
 
-    const systemPrompt = `Jsi spisovatel dětských knih. Napíšeš originální příběh v češtině. Koncovky minulého času přizpůsob jménu hrdiny (odešel/odešla). Žádná rodová lomítka!`;
-    const userPrompt = `Parametry: Jméno: ${heroName}, Věk: ${ageLabels[ageGroup]}, Atmosféra: ${tensionLabels[tension]}, Téma: ${theme}, Délka: ${lengthLabels[length]}`;
+    const systemPrompt = `Jsi špičkový spisovatel knih pro děti a mládež. Tvým úkolem je napsat originální a dechberoucí příběh v češtině.
+    CRITICAL GRAMMAR RULE: Podívej se na jméno hrdiny a přizpůsob tomu koncovky sloves v minulém čase (odešel vs odešla). Pokud je hrdinů více (např. Bella a David), používej množné číslo (odešli, objevili). V textu nesmí být ŽÁDNÁ rodová lomítka ani závorky!
+    CRITICAL LENGTH COMMAND: Striktně a nekompromisně dodrž pokyny pro rozsah v parametru Délka. Umělá inteligence má tendenci texty zkracovat – ty máš ale příkaz psát extrémně detailně, rozvláčně, používat bohatou slovní zásobu a generovat obrovské množství textu, pokud je vyžádán střední či dlouhý rozsah.
+    STRICT FORMATTING RULE: Tvůj výstup musí striktně dodržet formátování:
+    [NAZEV] Sem název příběhu
+    [TEXT] Sem text příběhu rozdělený do odstavců.`;
+
+    const userPrompt = `Parametry výstupu:
+    - Jméno hlavního hrdiny: ${heroName}
+    - Věková kategorie: ${ageLabels[ageGroup]}
+    - Úroveň napětí/atmosféra: ${tensionLabels[tension]}
+    - Hlavní téma/zápletka: ${theme}
+    - Požadovaná délka: ${lengthLabels[length]}`;
 
     const inputDetails = {
-      heroName, age: ageLabels[ageGroup], tension: tensionLabels[tension],
-      length: length === 'short' ? 'Rychlovka' : length === 'medium' ? 'Poctivý příběh' : 'Epické dobrodružství', theme
+      heroName,
+      age: ageLabels[ageGroup],
+      tension: tensionLabels[tension],
+      length: length === 'short' ? 'Rychlovka (3 min)' : length === 'medium' ? 'Poctivý příběh (10 min)' : 'Epické dobrodružství (20+ min)',
+      theme
     };
 
     try {
+      // Posíláme na server i zadný passcode
       const response = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -142,7 +176,16 @@ export default function App() {
         throw new Error(data.error || "Chyba na serveru.");
       }
       
-      setStory({ title: data.title, text: data.text, image: getStoryImage(ageGroup) });
+      setStory({
+        title: data.title,
+        text: data.text,
+        image: getStoryImage(ageGroup)
+      });
+
+      if (data.notionStatus !== "Uspěšně uloženo") {
+        console.warn("Zápis na pozadí se nezdařil.");
+      }
+
       fetchHistory();
 
     } catch (err) {
@@ -154,10 +197,25 @@ export default function App() {
 
   const handlePlayAudio = () => {
     if (!story || !story.text) return;
-    if (isPlaying) { window.speechSynthesis.cancel(); setIsPlaying(false); return; }
+    if (isPlaying) {
+      window.speechSynthesis.cancel();
+      setIsPlaying(false);
+      return;
+    }
+
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(story.title + ". " + story.text);
       utterance.lang = 'cs-CZ';
+      const voices = window.speechSynthesis.getVoices();
+      const czechVoices = voices.filter(v => v.lang.startsWith('cs'));
+
+      if (czechVoices.length > 0) {
+        const selectedVoice = czechVoices.find(v => {
+          const name = v.name.toLowerCase();
+          return voiceGender === 'female' ? name.includes('female') : name.includes('male');
+        }) || czechVoices[0];
+        utterance.voice = selectedVoice;
+      }
       utterance.onend = () => setIsPlaying(false);
       setIsPlaying(true);
       window.speechSynthesis.speak(utterance);
@@ -171,7 +229,12 @@ export default function App() {
     <div className="min-h-screen bg-[#09070f] text-gray-100 font-sans antialiased p-4 md:p-8">
       <header className="max-w-7xl mx-auto mb-8 flex justify-between items-center border-b border-purple-950/40 pb-4">
         <span className="text-2xl font-black tracking-wider bg-gradient-to-r from-emerald-400 via-teal-400 to-amber-400 bg-clip-text text-transparent">StoryLab</span>
-        <button type="button" onClick={handleSurpriseMe} className="bg-amber-500/10 border border-amber-500/40 text-amber-400 text-xs font-bold px-4 py-2 rounded-xl transition shadow shadow-amber-500/5">🎲 PŘEKVAP MĚ</button>
+        <button 
+          type="button" onClick={handleSurpriseMe}
+          className="bg-amber-500/10 border border-amber-500/40 hover:bg-amber-500/20 text-amber-400 text-xs font-bold px-4 py-2 rounded-xl transition shadow shadow-amber-500/5"
+        >
+          🎲 PŘEKVAP MĚ
+        </button>
       </header>
 
       <main className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -181,7 +244,7 @@ export default function App() {
           <h2 className="text-lg font-bold text-emerald-400 tracking-wide">Kovárna Příběhů</h2>
           <form onSubmit={handleForgeStory} className="space-y-5">
             
-            {/* POLÍČKO PRO PŘÍSTUPOVÝ KÓD S JASNÝM MARKETINGOVÝM ODKAZEM POD NÍM */}
+            {/* POLÍČKO PRO PŘÍSTUPOVÝ KÓD Z FORENDORS */}
             <div className="bg-purple-950/20 border border-purple-900/40 p-3 rounded-xl space-y-2">
               <label className="block text-[10px] font-bold uppercase tracking-widest text-amber-400">🔑 Přístupový kód</label>
               <input 
@@ -192,22 +255,27 @@ export default function App() {
               />
               <a 
                 href="https://www.forendors.cz" target="_blank" rel="noreferrer"
-                className="text-[10px] text-emerald-400 hover:text-emerald-300 font-bold hover:underline block pt-1 flex items-center gap-1"
+                className="text-[10px] text-emerald-400 hover:text-emerald-300 font-bold hover:underline pt-0.5 block"
               >
-                🔒 Nemáš kód? Získej ho na mém Forendors ➔
+                Nemáš kód? Získej ho na Forendors ➔
               </a>
             </div>
 
             <div>
               <label className="block text-[11px] font-semibold uppercase tracking-wider text-purple-300 mb-1.5">Jméno hrdiny</label>
-              <input type="text" value={heroName} onChange={(e) => setHeroName(e.target.value)} placeholder="Např. Eliška, David..." className="w-full bg-[#191433] border border-purple-900/40 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none" required />
+              <input type="text" value={heroName} onChange={(e) => setHeroName(e.target.value)} placeholder="Např. Eliška, David..." className="w-full bg-[#191433] border border-purple-900/40 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 text-sm" required />
             </div>
             
             <div>
               <label className="block text-[11px] font-semibold uppercase tracking-wider text-purple-300 mb-1.5">Věk dobrodruha</label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                {[ ['2-4', 'Batolata', '2-4 roky'], ['5-7', 'Předškoláci', '5-7 let'], ['8-12', 'Školáci', '8-12 let'], ['13+', 'Mladí dospělí', '13+ let'] ].map(([id, label, ageRange]) => (
-                  <button key={id} type="button" onClick={() => setAgeGroup(id)} className={`p-2.5 rounded-xl border text-left transition flex flex-col justify-center ${ageGroup === id ? 'bg-emerald-950/30 border-emerald-500 text-white' : 'bg-[#191433] border-purple-950 text-purple-300/60'}`}>
+                {[ 
+                  ['2-4', 'Batolata', '2-4 roky'], 
+                  ['5-7', 'Předškoláci', '5-7 let'], 
+                  ['8-12', 'Školáci', '8-12 let'], 
+                  ['13+', 'Mladí dospělí', '13+ let'] 
+                ].map(([id, label, ageRange]) => (
+                  <button key={id} type="button" onClick={() => setAgeGroup(id)} className={`p-2.5 rounded-xl border text-left transition flex flex-col justify-center ${ageGroup === id ? 'bg-emerald-950/30 border-emerald-500 text-white shadow-[0_0_10px_rgba(16,185,129,0.1)]' : 'bg-[#191433] border-purple-950 text-purple-300/60 hover:border-purple-900'}`}>
                     <span className="font-bold text-xs block leading-tight">{label}</span>
                     <span className="text-[10px] text-purple-400/40 block mt-0.5 font-normal">{ageRange}</span>
                   </button>
@@ -218,19 +286,23 @@ export default function App() {
             <div>
               <div className="flex justify-between text-[11px] font-semibold uppercase tracking-wider text-purple-300 mb-1.5">
                 <span>ÚROVEŇ NAPĚTÍ</span>
-                <span className="text-amber-400 font-bold">{tension === 1 && 'Usínací'} {tension === 2 && 'Pohodová'} {tension === 3 && 'Dobrodružná'} {tension === 4 && 'Napínavá'} {tension === 5 && 'Strašidelná'}</span>
+                <span className="text-amber-400 font-bold">
+                  {tension === 1 && 'Usínací'} {tension === 2 && 'Pohodová'}
+                  {tension === 3 && 'Dobrodružná'} {tension === 4 && 'Napínavá'}
+                  {tension === 5 && 'Strašidelná'}
+                </span>
               </div>
               <input type="range" min="1" max="5" value={tension} onChange={(e) => setTension(Number(e.target.value))} className="w-full accent-emerald-500 h-1.5 bg-[#191433] rounded-lg appearance-none cursor-pointer" />
             </div>
             <div>
               <label className="block text-[11px] font-semibold uppercase tracking-wider text-purple-300 mb-1.5">TÉMA / VÝZVA</label>
-              <textarea value={theme} onChange={(e) => setTheme(e.target.value)} placeholder="O čem by měl příběh být?..." className="w-full bg-[#191433] border border-purple-900/40 rounded-xl px-3 py-2 text-sm text-white h-20 resize-none" required />
+              <textarea value={theme} onChange={(e) => setTheme(e.target.value)} placeholder="O čem by měl příběh být?..." className="w-full bg-[#191433] border border-purple-900/40 rounded-xl px-3 py-2 text-sm text-white h-20 resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500/50" required />
             </div>
             <div>
               <label className="block text-[11px] font-semibold uppercase tracking-wider text-purple-300 mb-1.5">DÉLKA PŘÍBĚHU</label>
               <div className="grid grid-cols-1 gap-1.5">
                 {[ ['short', 'Rychlovka (3 min)'], ['medium', 'Poctivý příběh (10 min)'], ['long', 'Epické dobrodružství'] ].map(([id, label]) => (
-                  <button key={id} type="button" onClick={() => setLength(id)} className={`p-2 rounded-xl border text-center text-xs font-bold transition ${length === id ? 'bg-amber-500/10 border-amber-500 text-white' : 'bg-[#191433] border-purple-950 text-purple-300/60'}`}>{label}</button>
+                  <button key={id} type="button" onClick={() => setLength(id)} className={`p-2 rounded-xl border text-center text-xs font-bold transition ${length === id ? 'bg-amber-500/10 border-amber-500 text-white' : 'bg-[#191433] border-purple-950 text-purple-300/60 hover:border-purple-900'}`}>{label}</button>
                 ))}
               </div>
             </div>
@@ -242,14 +314,14 @@ export default function App() {
         <div className="lg:col-span-6 bg-[#120e24]/30 border border-purple-950/20 rounded-2xl p-6 flex flex-col min-h-[550px] justify-center items-center relative">
           
           {error && (
-            <div className="p-4 bg-red-950/40 border border-red-500/30 text-red-300 text-xs rounded-xl w-full text-center mb-4 flex flex-col items-center gap-2 animate-fadeIn">
+            <div className="p-4 bg-red-950/40 border border-red-500/30 text-red-300 text-xs rounded-xl w-full text-center mb-4 flex flex-col items-center gap-2">
               <span>{error}</span>
               {error.includes("kód") && (
                 <a 
                   href="https://www.forendors.cz" target="_blank" rel="noreferrer" 
-                  className="mt-1 bg-amber-500 hover:bg-amber-600 text-slate-950 px-4 py-2 rounded-xl font-black transition block text-center shadow-lg text-xs tracking-wide"
+                  className="mt-1 bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg font-bold transition block text-center text-xs"
                 >
-                  👉 Přejít na Forendors pro tajný kód
+                  👉 Chci získat kód na Forendors
                 </a>
               )}
             </div>
@@ -311,11 +383,17 @@ export default function App() {
               ) : (
                 <>
                   {freeStories.map((item) => (
-                    <button key={item.id} type="button" onClick={() => handleSelectHistoryStory(item)} className={`w-full text-left p-2.5 rounded-xl border text-xs transition block truncate ${story?.id === item.id ? 'bg-emerald-950/20 border-emerald-500 text-emerald-300' : 'bg-[#191433] border-purple-950 text-purple-200 hover:border-purple-800'}`}>
+                    <button 
+                      key={item.id} 
+                      type="button"
+                      onClick={() => handleSelectHistoryStory(item)}
+                      className={`w-full text-left p-2.5 rounded-xl border text-xs transition block truncate ${story?.id === item.id ? 'bg-emerald-950/20 border-emerald-500 text-emerald-300' : 'bg-[#191433] border-purple-950 text-purple-200 hover:border-purple-800'}`}
+                    >
                       <span className="font-bold block truncate text-xs text-emerald-400 mb-0.5">📖 {item.title}</span>
                       <span className="text-[10px] text-purple-400/50 block">Klikni pro otevření</span>
                     </button>
                   ))}
+
                   {lockedCount > 0 && (
                     <div className="p-3 rounded-xl border border-dashed border-purple-950/60 bg-purple-950/10 flex flex-col items-center justify-center text-center mt-2 space-y-1">
                       <span className="text-sm">🔒</span>
@@ -338,12 +416,11 @@ export default function App() {
             <div className="h-12 bg-[#191433] rounded-lg"></div>
           </div>
 
-          {/* VIP BOX - NYNÍ PROPOJENÝ NA FORENDORS */}
           <div className="bg-gradient-to-br from-emerald-500/10 via-purple-950/20 to-[#120e24] border border-emerald-500/20 rounded-2xl p-5 shadow-lg">
             <h3 className="text-base font-black text-amber-400 mb-1">Mistr Kovář VIP</h3>
             <p className="text-[11px] text-purple-300 mb-4 leading-relaxed">Odemkni ultra-realistické předčítání přes **ElevenLabs**, neomezenou historii a sdílení s ostatními rodinami.</p>
             <a 
-              href="https://www.forendors.cz/nocniknihovna" target="_blank" rel="noreferrer"
+              href="https://www.forendors.cz" target="_blank" rel="noreferrer"
               className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl block text-center hover:from-amber-400 transition shadow"
             >
               Aktivovat na Forendors
