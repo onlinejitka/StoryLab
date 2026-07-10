@@ -14,6 +14,10 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: '🔒 Přístup odmítnut. Pro generování pohádek musíte nejprve zadat Váš Premium kód.' });
   }
 
+  // Rychlá kontrola přítomnosti proměnných před pokusem o připojení
+  if (!notionToken) return res.status(500).json({ error: 'Chyba: Ve Vercelu chybí nebo je neaktivní NOTION_TOKEN.' });
+  if (!notionMembersDbId) return res.status(500).json({ error: 'Chyba: Ve Vercelu chybí proměnná NOTION_MEMBERS_DATABASE_ID.' });
+
   try {
     const checkMemberRes = await fetch(`https://api.notion.com/v1/databases/${notionMembersDbId}/query`, {
       method: 'POST',
@@ -30,12 +34,10 @@ export default async function handler(req, res) {
       })
     });
 
-    if (!notionMembersDbId) {
-      return res.status(500).json({ error: 'Chybí proměnná NOTION_MEMBERS_DATABASE_ID na Vercelu.' });
-    }
-
+    // 🔍 CHYTOVÝ DETEKTOR: Pokud se nespojí, vytáhneme přesnou zprávu z Notionu
     if (!checkMemberRes.ok) {
-      throw new Error('Nepodařilo se navázat spojení s databází členů.');
+      const errJson = await checkMemberRes.json().catch(() => ({}));
+      throw new Error(`Notion API Error (Kód ${checkMemberRes.status}): ${errJson.message || 'Nedefinovaná chyba přístupu.'}`);
     }
 
     const memberData = await checkMemberRes.json();
@@ -51,10 +53,11 @@ export default async function handler(req, res) {
     }
 
   } catch (authError) {
+    // Tady se na webu ukáže ta přesná diagnostická zpráva
     return res.status(500).json({ error: `Chyba autorizace brány: ${authError.message}` });
   }
 
-  // 2. PROCES S OPENAI (Kód pokračuje standardně dál...)
+  // 2. PROCES S OPENAI (Pokud autorizace projde, kód pokračuje dál)
   if (!apiKey) {
     return res.status(500).json({ error: 'Chybí OPENAI_API_KEY.' });
   }
