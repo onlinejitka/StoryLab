@@ -75,6 +75,24 @@ export default function App() {
     return () => clearInterval(interval);
   }, [isLoading]);
 
+  // Funkce pro otevření Stripe brány v centrovaném vyskakovacím okně
+  const openStripePopup = (e) => {
+    e.preventDefault();
+    const url = "https://buy.stripe.com/8x2fZh8CZ2H2eD73aQ9IQ0q";
+    const width = 540;
+    const height = 760;
+    
+    // Výpočet středu obrazovky
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+    
+    window.open(
+      url, 
+      'Noční Knihovna Platba', 
+      `width=${width},height=${height},top=${top},left=${left},status=no,menubar=no,toolbar=no,scrollbars=yes,resizable=yes`
+    );
+  };
+
   const handleConfirmPasscode = () => {
     if (!passcode.trim()) {
       setPasscodeStatus('❌ Kód nesmí být prázdný');
@@ -274,7 +292,7 @@ export default function App() {
             
             <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow shadow-amber-500/10 select-none">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 21L8.188 15.904L3 15L8.188 14.096L9 9L9.813 14.096L15 15L9.813 15.904Z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 21L8.188 15.904L3 15 /8.188 14.096L9 9L9.813 14.096L15 15L9.813 15.904Z" />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.071 4.929l-.395 2.455l-2.455.395l2.455.395l.395 2.455l.395-2.455l2.455-.395l-2.455-.395l-.395-2.455z" />
               </svg>
               <span>Generátor pohádek</span>
@@ -327,7 +345,8 @@ export default function App() {
                 )}
 
                 <a 
-                  href="https://buy.stripe.com/8x2fZh8CZ2H2eD73aQ9IQ0q" target="_blank" rel="noreferrer"
+                  href="https://buy.stripe.com/8x2fZh8CZ2H2eD73aQ9IQ0q" 
+                  onClick={openStripePopup}
                   className="text-[10px] text-emerald-400 hover:text-emerald-300 font-bold hover:underline pt-0.5 block text-center"
                 >
                   Nemáte kód? Aktivovat Premium ➔
@@ -385,7 +404,7 @@ export default function App() {
             </form>
           </div>
 
-          {/* PROSTŘEDNÍ PANEL (OPRAVENÝ TEXT PODLE REÁLNÉHO STAVU PRODUKTU) */}
+          {/* PROSTŘEDNÍ PANEL */}
           <div className="lg:col-span-6 order-1 lg:order-2 bg-[#120e24]/30 border border-purple-950/20 rounded-2xl p-6 flex flex-col min-h-[550px] justify-center items-center relative">
             
             {error && (
@@ -393,7 +412,8 @@ export default function App() {
                 <span>{error}</span>
                 {error.includes("kód") && (
                   <a 
-                    href="https://buy.stripe.com/8x2fZh8CZ2H2eD73aQ9IQ0q" target="_blank" rel="noreferrer" 
+                    href="https://buy.stripe.com/8x2fZh8CZ2H2eD73aQ9IQ0q" 
+                    onClick={openStripePopup}
                     className="mt-1 bg-amber-500 hover:bg-amber-600 text-slate-950 px-4 py-2 rounded-xl font-bold transition block text-center text-xs"
                   >
                     👉 AKTIVOVAT PREMIUM PŘÍSTUP ZA 75 KČ
@@ -415,7 +435,8 @@ export default function App() {
 
                 <div className="pt-2">
                   <a 
-                    href="https://buy.stripe.com/8x2fZh8CZ2H2eD73aQ9IQ0q" target="_blank" rel="noreferrer"
+                    href="https://buy.stripe.com/8x2fZh8CZ2H2eD73aQ9IQ0q" 
+                    onClick={openStripePopup}
                     className="inline-block bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 text-slate-950 font-black text-xs px-6 py-3 rounded-xl transition shadow-lg tracking-wider uppercase"
                   >
                     AKTIVOVAT PŘÍSTUP ZA 75 KČ ➔
