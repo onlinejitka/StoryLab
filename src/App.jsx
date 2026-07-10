@@ -501,15 +501,15 @@ export default function App() {
               <div className="h-12 bg-[#191433] rounded-lg"></div>
             </div>
 
-            <div className="bg-gradient-to-br from-emerald-500/10 via-purple-950/20 to-[#120e24] border border-emerald-500/20 rounded-2xl p-5 shadow-lg">
-              <h3 className="text-base font-black text-amber-400 mb-1">Noční Knihovna VIP</h3>
-              <p className="text-[11px] text-purple-300 mb-4 leading-relaxed">Odemkněte si ultra-realistické předčítání přes **ElevenLabs**, neomezenou historii a sdílení s ostatními rodinami.</p>
-              <a 
-                href="https://buy.stripe.com/8x2fZh8CZ2H2eD73aQ9IQ0q" target="_blank" rel="noreferrer"
-                className="w-full bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl block text-center hover:from-amber-300 transition shadow"
-              >
-                AKTIVOVAT PŘÍSTUP ZA 75 KČ
-              </a>
+            {/* UPRAVENÝ VIP BOX - ČISTÁ OCHUTNÁVKA BEZ PLATBY S ODZNAKEM "JIŽ BRZY" */}
+            <div className="bg-gradient-to-br from-purple-950/20 to-[#120e24] border border-purple-900/40 rounded-2xl p-5 shadow-lg relative overflow-hidden">
+              <div className="absolute top-3 right-3 bg-purple-900/60 border border-purple-700/50 text-[9px] text-purple-300 px-2 py-0.5 rounded-md font-bold uppercase tracking-wider">
+                Již brzy
+              </div>
+              <h3 className="text-base font-black text-purple-400 mb-1">Noční Knihovna VIP</h3>
+              <p className="text-[11px] text-purple-400/60 leading-relaxed">
+                Do budoucna pro vás chystáme ultra-realistické předčítání pohádek přes <strong className="text-purple-300">ElevenLabs</strong>, kompletní veřejnou knihovnu pro sdílení příběhů a prémiové rodinné účty.
+              </p>
             </div>
           </div>
 
