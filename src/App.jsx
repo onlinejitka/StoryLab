@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 const SURPRISE_POOL = [
   { name: "Bella a David", age: "5-7", tension: 2, length: "medium", theme: "Sžívání se s Lukášem – novým partnerem maminky. Bella ho má ráda, ale David se schovává do svého bunkru and AI pomůže najít společnou pohádkovou řeč." },
   { name: "Anička", age: "2-4", tension: 1, length: "short", theme: "Skřítek Ponožkovník schovává věci po pokoji, protože z nich staví tajný koráb pro medvídky." },
-  { name: "Kryštof", age: "8-12", tension: 4, length: "long", theme: "Nález starého svítícího krystalu v jeskyni pod školou, který otevírá portál do světa, kde se mluví pozpátku." },
+  { name: "Kryštof", age: "8-12", tension: 4, length: "long", theme: "Nález starého svítícího krystalu v jeskyni pod školou, který otevírá portál do sveta, kde se mluví pozpátku." },
   { name: "Max", age: "13+", tension: 5, length: "medium", theme: "Digitální virus infikoval holografické město a hlavní hrdina musí vyřešit logickou hádanku starého mainframe systému." },
   { name: "Elenka", age: "5-7", tension: 3, length: "medium", theme: "Jak překonat strach ze tmy a z hluků za oknem, které ve skutečnosti dělá zapomnětlivý větrný meluzínek." }
 ];
@@ -154,7 +154,7 @@ export default function App() {
     const systemPrompt = `Jsi špičkový spisovatel knih pro dětí a mládež. Tvým úkolem je napsat originální a dechberoucí příběh v češtině.
     CRITICAL GRAMMAR RULE: Pokud uživatel zada jméno, přizpůsob tomu koncovky sloves v minulém čase (odešel vs odešla). Pokud si jméno vymýšlíš sám, vyber buď jasně klučičí nebo holčičí jméno a striktně dodržuj správné rodové koncovky. V textu nesmí být ŽÁDNÁ rodová lomítka ani závorky!
     CRITICAL LENGTH COMMAND: Striktně a nekompromisně dodrž pokyny pro rozsah v parametru Délka. Umělá inteligence má tendenci texty zkracovat – ty máš ale příkaz psát extrémně detailně, rozvláčně, používat bohatou slovní zásobu a generovat obrovské množství textu, pokud je vyžádán střední či dlouhý rozsah.
-    STRICT FORMATTING RULE: Tvůj výstup musí striktně dodržet formátování:
+    STRICT FORMATTING RULE: Tvůj výstup mustí striktně dodržet formátování:
     [NAZEV] Sem název příběhu
     [TEXT] Sem text příběhu rozdělený do odstavců.`;
 
@@ -385,7 +385,7 @@ export default function App() {
             </form>
           </div>
 
-          {/* PROSTŘEDNÍ PANEL */}
+          {/* PROSTŘEDNÍ PANEL (OPRAVENÝ TEXT PODLE REÁLNÉHO STAVU PRODUKTU) */}
           <div className="lg:col-span-6 order-1 lg:order-2 bg-[#120e24]/30 border border-purple-950/20 rounded-2xl p-6 flex flex-col min-h-[550px] justify-center items-center relative">
             
             {error && (
@@ -396,7 +396,7 @@ export default function App() {
                     href="https://buy.stripe.com/8x2fZh8CZ2H2eD73aQ9IQ0q" target="_blank" rel="noreferrer" 
                     className="mt-1 bg-amber-500 hover:bg-amber-600 text-slate-950 px-4 py-2 rounded-xl font-bold transition block text-center text-xs"
                   >
-                    👉 AKTIVOVAT PŘÍSTUP ZA 75 KČ
+                    👉 AKTIVOVAT PREMIUM PŘÍSTUP ZA 75 KČ
                   </a>
                 )}
               </div>
@@ -407,10 +407,10 @@ export default function App() {
             {!isLoading && !story && (
               <div className="text-center p-6 max-w-md space-y-5 border border-purple-950/60 bg-[#120e24]/50 rounded-2xl shadow-xl animate-fadeIn">
                 <span className="text-4xl block filter drop-shadow-[0_0_15px_rgba(245,158,11,0.2)]">🔒</span>
-                <h3 className="text-lg font-black text-amber-400 tracking-wide">Chcete dětem odemknout nahrávku a celou sadu omalovánek?</h3>
+                <h3 className="text-lg font-black text-amber-400 tracking-wide">Chcete dětem vykovat osobní pohádku na míru?</h3>
                 
                 <p className="text-purple-200 text-sm leading-relaxed text-justify px-2">
-                  Aktivací Premium členství získáte okamžitý přístup k doprovodným nahrávkám, rozšířeným kreativním sadám ke stažení a našemu inteligentnímu AI generátoru pohádek na míru.
+                  Aktivací Premium členství získáte okamžitý přístup k tomuto **inteligentnímu AI generátoru pohádek**. Na hlavní doméně Noční Knihovny se vám zároveň plně odemknou **všechny doprovodné hlasové nahrávky, říkadla a kreativní sady omalovánek ke stažení**.
                 </p>
 
                 <div className="pt-2">
@@ -501,7 +501,6 @@ export default function App() {
               <div className="h-12 bg-[#191433] rounded-lg"></div>
             </div>
 
-            {/* UPRAVENÝ VIP BOX - ČISTÁ OCHUTNÁVKA BEZ PLATBY S ODZNAKEM "JIŽ BRZY" */}
             <div className="bg-gradient-to-br from-purple-950/20 to-[#120e24] border border-purple-900/40 rounded-2xl p-5 shadow-lg relative overflow-hidden">
               <div className="absolute top-3 right-3 bg-purple-900/60 border border-purple-700/50 text-[9px] text-purple-300 px-2 py-0.5 rounded-md font-bold uppercase tracking-wider">
                 Již brzy
