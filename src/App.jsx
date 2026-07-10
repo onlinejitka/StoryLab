@@ -147,7 +147,7 @@ export default function App() {
     
     const lengthLabels = { 
       short: 'KRÁTKÝ příběh (rychlovka před spaním, cca 3 až 4 odstavce).', 
-      medium: 'VELMI DLOUHÝ, POCTIVÝ PŘÍBENS. Instrukce: Napiš minimálně 12 až 18 rozsáhlých and detailních odstavců. Děj nesmí utíkat rychle, věnuj se detailnímu popisu prostředí, pocitům postan, rozvíjej dlouhé a hluboké dialogy mezi hrdiny. Text musí být dostatečně dlouhý na 10 minut souvislého čtení!', 
+      medium: 'VELMI DLOUHÝ, POCTIVÝ PŘÍBENS. Instrukce: Napiš minimálně 12 až 18 rozsáhlých and detailních odstavců. Děj nesmí utíkat rychle, věnuj se detailnímu popisu prostředí, pocitům postan, rozvíjej dlouhé a hluboké dialogy mezi hrdiny. Text mustí být dostatečně dlouhý na 10 minut souvislého čtení!', 
       long: 'EPICKÝ ROZSÁHLÝ EPOS ROZDĚLENÝ NA KAPITOLY (např. Kapitola I, Kapitola II, Kapitola III). Instrukce: Vygeneruj obří literární dílo o minimálně 25 až 35 bohatých odstavcích. Piš maximálně barvitě, rozvíjej vedlejší zápletky, popisy scén a dramatické rozhovory, aby čtení trvalo přes 20 minut!' 
     };
 
@@ -241,7 +241,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#09070f] text-gray-100 font-sans antialiased">
       
-      {/* 🌙 ŽIVÉ HLAVNÍ MENU S VEKTOROVÝMI IKONAMI (SVG) */}
+      {/* 🌙 ŽIVÉ HLAVNÍ MENU */}
       <nav className="w-full bg-[#0c0a16] border-b border-purple-950/40 px-4 py-4 md:px-8 shadow-lg">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
           
@@ -257,10 +257,8 @@ export default function App() {
             </div>
           </a>
           
-          {/* ODKAZY S VEKTOROVÝMI ČISTÝMI IKONAMI NAMÍSTO BAREVNÝCH EMOJI */}
           <div className="flex items-center gap-2 md:gap-3 text-xs font-bold">
             <a href="https://www.nocniknihovna.cz/knihovna" className="flex items-center gap-2 px-3 py-2 rounded-xl bg-purple-950/20 border border-purple-900/40 text-purple-200 hover:text-white transition">
-              {/* Ikona knížky */}
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
               </svg>
@@ -268,7 +266,6 @@ export default function App() {
             </a>
             
             <a href="https://www.nocniknihovna.cz/hadanky" className="flex items-center gap-2 px-3 py-2 rounded-xl bg-purple-950/20 border border-purple-900/40 text-purple-200 hover:text-white transition">
-              {/* Ikona otazníku v kroužku */}
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
               </svg>
@@ -276,7 +273,6 @@ export default function App() {
             </a>
             
             <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow shadow-amber-500/10 select-none">
-              {/* Ikona magické jiskry */}
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 21L8.188 15.904L3 15L8.188 14.096L9 9L9.813 14.096L15 15L9.813 15.904Z" />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.071 4.929l-.395 2.455l-2.455.395l2.455.395l.395 2.455l.395-2.455l2.455-.395l-2.455-.395l-.395-2.455z" />
@@ -308,10 +304,10 @@ export default function App() {
             <form onSubmit={handleForgeStory} className="space-y-5">
               
               <div className="bg-purple-950/20 border border-purple-900/40 p-3 rounded-xl space-y-2">
-                <label className="block text-[10px] font-bold uppercase tracking-widest text-amber-400">🔑 Přístupový kód</label>
+                <label className="block text-[10px] font-bold uppercase tracking-widest text-amber-400">🔑 Premium Přístupový kód</label>
                 <input 
                   type="password" value={passcode} onChange={(e) => setPasscode(e.target.value)} 
-                  placeholder="Vlož tajný kód z profilu..." 
+                  placeholder="Vložte Váš kód (např. sl-jiri-8x3a)..." 
                   className="w-full bg-[#191433] border border-purple-900/60 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-amber-500"
                   required 
                 />
@@ -321,7 +317,7 @@ export default function App() {
                   onClick={handleConfirmPasscode}
                   className="w-full bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/25 text-amber-400 text-[11px] font-bold py-1.5 rounded-lg transition"
                 >
-                  Potvrdit kód ➔
+                  Uložit kód ➔
                 </button>
 
                 {passcodeStatus && (
@@ -331,10 +327,10 @@ export default function App() {
                 )}
 
                 <a 
-                  href="https://www.forendors.cz/nocniknihovna" target="_blank" rel="noreferrer"
+                  href="https://buy.stripe.com/8x2fZh8CZ2H2eD73aQ9IQ0q" target="_blank" rel="noreferrer"
                   className="text-[10px] text-emerald-400 hover:text-emerald-300 font-bold hover:underline pt-0.5 block text-center"
                 >
-                  Nemáš kód? Získej ho na Forendors ➔
+                  Nemáte kód? Aktivovat Premium ➔
                 </a>
               </div>
 
@@ -397,10 +393,10 @@ export default function App() {
                 <span>{error}</span>
                 {error.includes("kód") && (
                   <a 
-                    href="https://www.forendors.cz/nocniknihovna" target="_blank" rel="noreferrer" 
-                    className="mt-1 bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg font-bold transition block text-center text-xs"
+                    href="https://buy.stripe.com/8x2fZh8CZ2H2eD73aQ9IQ0q" target="_blank" rel="noreferrer" 
+                    className="mt-1 bg-amber-500 hover:bg-amber-600 text-slate-950 px-4 py-2 rounded-xl font-bold transition block text-center text-xs"
                   >
-                    👉 Chci získat kód na Forendors
+                    👉 AKTIVOVAT PŘÍSTUP ZA 75 KČ
                   </a>
                 )}
               </div>
@@ -409,30 +405,25 @@ export default function App() {
             {notionWarning && <div className="p-3 bg-amber-950/30 border border-amber-500/20 text-amber-300 text-[11px] rounded-xl w-full text-center mb-4">{notionWarning}</div>}
 
             {!isLoading && !story && (
-              <div className="text-center p-6 max-w-md space-y-4 border border-purple-950/60 bg-[#120e24]/50 rounded-2xl shadow-xl animate-fadeIn">
-                <span className="text-5xl block filter drop-shadow-[0_0_15px_rgba(245,158,11,0.2)]">✨🚀✨</span>
-                <h3 className="text-xl font-black text-amber-400 tracking-wide">StoryLab: Exkluzivní testování</h3>
+              <div className="text-center p-6 max-w-md space-y-5 border border-purple-950/60 bg-[#120e24]/50 rounded-2xl shadow-xl animate-fadeIn">
+                <span className="text-4xl block filter drop-shadow-[0_0_15px_rgba(245,158,11,0.2)]">🔒</span>
+                <h3 className="text-lg font-black text-amber-400 tracking-wide">Chcete dětem odemknout nahrávku a celou sadu omalovánek?</h3>
                 
-                <div className="text-purple-200 text-sm space-y-3 leading-relaxed text-justify px-2">
-                  <p>
-                    Tato aplikace se momentálně nachází v uzavřené testovací fázi a přístup do ní mají <strong>přednostně naši předplatitelé na platformě Forendors</strong>.
-                  </p>
-                  <p>
-                    Předplatné stojí <strong>jen 75 Kč</strong>, podpoříte tím rozvoj tohoto projektu a okamžitě získáte <strong>tajný přístupový kód</strong>, se kterým si můžete vygenerovat neomezené množství unikátních personalizovaných pohádek přímo pro vaše dětí.
-                  </p>
-                </div>
+                <p className="text-purple-200 text-sm leading-relaxed text-justify px-2">
+                  Aktivací Premium členství získáte okamžitý přístup k doprovodným nahrávkám, rozšířeným kreativním sadám ke stažení a našemu inteligentnímu AI generátoru pohádek na míru.
+                </p>
 
                 <div className="pt-2">
                   <a 
-                    href="https://www.forendors.cz/nocniknihovna" target="_blank" rel="noreferrer"
-                    className="inline-block bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-slate-950 font-black text-xs px-6 py-3 rounded-xl transition shadow-lg tracking-wider uppercase"
+                    href="https://buy.stripe.com/8x2fZh8CZ2H2eD73aQ9IQ0q" target="_blank" rel="noreferrer"
+                    className="inline-block bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 text-slate-950 font-black text-xs px-6 py-3 rounded-xl transition shadow-lg tracking-wider uppercase"
                   >
-                    Získat kód za 75 Kč na našem Forendors ➔
+                    AKTIVOVAT PŘÍSTUP ZA 75 KČ ➔
                   </a>
                 </div>
                   
                 <p className="text-[10px] text-purple-400/50 italic pt-2">
-                  Máte kód? Vložte ho do pole níže (nebo v levém sloupci), vyplňte si parametry příběhu a klikněte na tlačítko Vykovat příběh. O všechno ostatní se postará AI.
+                  Již máte svůj premium přístupový kód z e-mailu? Vložte ho vlevo nahoře (nebo pod formulář na mobilu) a klikněte na Uložit kód.
                 </p>
               </div>
             )}
@@ -511,13 +502,13 @@ export default function App() {
             </div>
 
             <div className="bg-gradient-to-br from-emerald-500/10 via-purple-950/20 to-[#120e24] border border-emerald-500/20 rounded-2xl p-5 shadow-lg">
-              <h3 className="text-base font-black text-amber-400 mb-1">Mistr Kovář VIP</h3>
-              <p className="text-[11px] text-purple-300 mb-4 leading-relaxed">Odemkni ultra-realistické předčítání přes **ElevenLabs**, neomezenou historii a sdílení s ostatními rodinami.</p>
+              <h3 className="text-base font-black text-amber-400 mb-1">Noční Knihovna VIP</h3>
+              <p className="text-[11px] text-purple-300 mb-4 leading-relaxed">Odemkněte si ultra-realistické předčítání přes **ElevenLabs**, neomezenou historii a sdílení s ostatními rodinami.</p>
               <a 
-                href="https://www.forendors.cz/nocniknihovna" target="_blank" rel="noreferrer"
-                className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl block text-center hover:from-amber-400 transition shadow"
+                href="https://buy.stripe.com/8x2fZh8CZ2H2eD73aQ9IQ0q" target="_blank" rel="noreferrer"
+                className="w-full bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl block text-center hover:from-amber-300 transition shadow"
               >
-                Aktivovat na Forendors
+                AKTIVOVAT PŘÍSTUP ZA 75 KČ
               </a>
             </div>
           </div>
